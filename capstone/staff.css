@@ -1,0 +1,110 @@
+/* STAFF DASHBOARD STYLES */
+
+/* Header */
+.staff-header {
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.staff-header h1 {
+    margin-bottom: 10px;
+}
+
+.staff-header nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.staff-header nav a:hover {
+    text-decoration: underline;
+}
+
+/* Main Panel */
+.staff-panel {
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+/* Section Styling */
+.staff-panel section {
+    background-color: #222;
+    border: 2px solid #ffe0b2;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.staff-panel h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+/* Assigned Orders */
+#assignedOrders {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #444;
+}
+
+/* Update Order Status Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+form input,
+form select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+form button {
+    background-color: #d2691e;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+form button:hover {
+    background-color: #b35917;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background-color: #222;
+    padding: 15px 0;
+    font-size: 14px;
+    color: #555;
+    margin-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .staff-panel {
+        padding: 15px;
+    }
+
+    form input,
+    form select,
+    form button {
+        width: 100%;
+    }
+}

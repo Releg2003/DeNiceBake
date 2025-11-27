@@ -1,0 +1,524 @@
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Dé Nice BAKES</title>
+          <link rel="stylesheet" href="style.css" />
+          <script src="https://kit.fontawesome.com/77c0b9dc19.js" crossorigin="anonymous"></script>
+        </head>
+        <body>
+
+          <!-- Header -->
+          <div class="Header_section">
+            <div class="container_fluid">
+              <div class="main_logo">
+  <a href="#hero"><img src="logo.jpg" alt="Logo" /></a>
+</div>
+              <!-- Hamburger Menu Button -->
+              <div class="burger" onclick="toggleMenu()">      
+                <i class="fas fa-bars"></i>
+              </div>
+
+              <div class="menu_main">
+                <nav>
+                  <ul>
+                    <li id="loginMenu"><a href="javascript:void(0)" onclick="openLogin()"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li id="orderMenu" style="display:none;"><a href="order.html"><i class="fas fa-shopping-cart"></i> Order</a></li>
+                    <li><a href="myorders.html" onclick="showMyOrders()"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+                   <li id="userMenu" style="display:none;"><a href="user.html"> <i class="fas fa-user"></i>User</span></a></li>
+                    <li id="logoutMenu" style="display:none;"><a href="javascript:void(0)" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Login Popup -->
+          <div class="popup" id="loginPopup">
+            <div class="popup-content">
+              <h2>Login</h2>
+
+<span class="close-popup" onclick="closePopup('loginPopup')">&times;</span>
+
+
+              <form id="loginForm" onsubmit="return loginUser(event)">
+                <input type="email" id="loginEmail" placeholder="Email" required />
+                <div class="password-container">
+                  <input type="password" id="loginPassword" placeholder="Password" required />
+                  <i class="fas fa-eye" id="toggleLoginPassword"></i>
+                </div>
+                <button type="submit">Login</button>
+              </form>
+              <a href="#" onclick="switchPopup('loginPopup', 'forgotPasswordPopup')">Forgot Password?</a>
+              <p>Don't have an account? <a href="#" onclick="switchPopup('loginPopup', 'signupPopup')">Sign up</a></p>
+            </div>
+          </div>
+          
+
+          <!-- Forgot Password Popup -->
+          <div class="popup" id="forgotPasswordPopup">
+            <div class="popup-content">
+              <h2>Forgot Password</h2>
+              <form id="forgotPasswordForm" onsubmit="return forgotPassword(event)">
+                <input type="email" id="forgotEmail" placeholder="Enter your email" required />
+                <button type="submit">Send Reset Link</button>
+              </form>
+              <p><a href="#" onclick="switchPopup('forgotPasswordPopup', 'loginPopup')">Back to Login</a></p>
+            </div>
+          </div>
+
+          <!-- Forgot Password Success Popup -->
+          <div class="popup" id="forgotSuccessPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Reset Link Sent </h2>
+              <p>Check your email inbox or spam folder.</p>
+              <button class="cta-button" onclick="closePopup('forgotSuccessPopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Signup Popup -->
+          <div class="popup" id="signupPopup">
+            <div class="popup-content">
+              <h2>Create an Account</h2>
+             <form id="signupForm" onsubmit="return signupUser(event)">
+                <input type="text" id="signupName" placeholder="Username" required />
+                <input type="email" id="signupEmail" placeholder="Email" required />
+                <div class="password-container">
+                  <input type="password" id="signupPassword" placeholder="Password" required />
+                  <i class="fas fa-eye" id="toggleSignupPassword"></i>
+                </div>
+                <button type="submit">Sign Up</button>
+              </form>
+              <p>Already have an account? <a href="#" onclick="switchPopup('signupPopup', 'loginPopup')">Login</a></p>
+            </div>
+          </div>
+
+          <!-- Signup Success Popup -->
+          <div class="popup" id="signupSuccessPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Account Successfully Created!</h2>
+              <p>Your account has been created. Please login to continue.</p>
+              <button class="cta-button" onclick="switchPopup('signupSuccessPopup', 'loginPopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Signup Error Popup -->
+          <div class="popup" id="signupErrorPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Signup Error</h2>
+              <p id="signupErrorMessage">Something went wrong.</p>
+              <button class="cta-button" onclick="closePopup('signupErrorPopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Welcome Popup After Login -->
+          <div class="popup" id="welcomePopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2 id="welcomeTitle">Welcome! </h2>
+              <p>You have successfully logged in.</p>
+              <button class="cta-button" onclick="closePopup('welcomePopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Wrong Password Popup -->
+          <div class="popup" id="wrongPasswordPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Incorrect Password </h2>
+              <p>The email or password you entered is incorrect.</p>
+              <button class="cta-button" onclick="closePopup('wrongPasswordPopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Invalid Sign-up Password Popup -->
+          <div class="popup" id="invalidPasswordPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Invalid Password </h2>
+              <p>Password must be at least 8 characters, include at least one uppercase letter, and one special character.</p>
+              <button class="cta-button" onclick="closePopup('invalidPasswordPopup')">OK</button>
+            </div>
+          </div>
+
+          <!-- Logout Success Popup -->
+          <div class="popup" id="logoutSuccessPopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Logged Out</h2>
+              <p>You have successfully logged out.</p>
+              <button class="cta-button" onclick="closeLogoutPopup()">OK</button>
+            </div>
+          </div>
+
+          <!-- ✅ NEW ADMIN WELCOME POPUP -->
+          <div class="popup" id="adminWelcomePopup">
+            <div class="popup-content" style="text-align:center; max-width:400px;">
+              <h2>Welcome! Admin</h2>
+              <p>You have successfully logged in as Administrator.</p>
+              <button class="cta-button" onclick="goToAdmin()">OK</button>
+            </div>
+          </div>
+
+          <!-- Hero -->
+          <section class="hero">
+            <h1>Dé Nice BAKES </h1>
+            <h3>Freshly Baked</h3>
+            <p>Let Us Create Some Wonderful Pastry.</p>
+          </section>
+
+          <!-- Services -->
+          <section class="services">
+            <h2>🎂 Our Services 🍪</h2>
+            <div class="service-cards">
+              <div class="card"><h3>🍪 Freshly Baked Cookies</h3><p>Soft-baked, chewy, and made fresh daily.
+Available in classic flavors and seasonal specials. Great for gifts or personal treats.</p></div>
+              <div class="card"><h3>🎂 Custom Cake Creation</h3><p>We craft fully customizable cakes for birthdays, weddings, anniversaries, and special occasions. Choose your size, flavor, fillings, frosting, and design — we bring your ideas to life with premium ingredients and artistic detail.</p></div>
+              <div class="card"><h3>🧁 Cupcakes & Dessert Boxes</h3><p>Perfect for parties, giveaways, and events!
+Choose from assorted cupcake flavors, themed designs, or mixed dessert boxes that everyone will enjoy.</p></div>
+              <div class="card"><h3>🎁 Custom Gift Packaging</h3><p>Add personalized packaging for birthdays, holidays, or corporate events.
+Includes ribbons, tags, greeting notes, and themed boxes.</p></div>
+            </div>
+          </section>
+
+        <!-- Cakes & Pastries Slider -->
+
+          <!-- Cake Price Popup -->
+        <div class="popup" id="pricePopup">
+          <div class="popup-content"> 
+            <h2 id="popupCakeName">Cake Name</h2>
+            <img id="popupCakeImage" class="popup-img" src="" alt="Cake Image">
+            <table class="price-table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody id="popupPriceBody">
+                <!-- Prices will be injected here -->
+              </tbody>
+            </table>
+            <button class="close-btn" onclick="closePopup('pricePopup')">Close</button>
+          </div>
+        </div>
+          <section class="cakes-pastries">
+            <h2>🎂 Our Cakes & Pastries 🍪</h2>
+            <div class="cakes-container">
+              <button class="scroll-btn left-btn">&#10094;</button>
+              <div class="cakes-slider">
+                <div class="slide-track">
+                  <div class="item-card" onclick="openPricePopup(this)" 
+            data-name="Cookies & Cream Cake" 
+            data-img="cake1.jpg" 
+            data-prices='{"Small":"₱500.00","Medium":"₱800.00","Large":"₱1200.00"}'>
+          <img src="cake1.jpg" alt="Cookies & Cream Cake">
+          <h3>Cookies & Cream Cake</h3>
+          <p>Rich and Cookies & Cream layered cake for all occasions.</p>
+        </div>
+
+        <div class="item-card" onclick="openPricePopup(this)" 
+            data-name="Biscoff Cookies" 
+            data-img="demo.jpg" 
+            data-prices='{"Box of 3":"₱180.00","box of 6":"₱360.00"}'>
+          <img src="demo.jpg" alt="Biscoff Cookies">
+          <h3>Biscoff Cookies</h3>
+          <p>Taste like a cookie with a savory butter flavor.</p>
+        </div>
+
+                </div>
+              </div>
+              <button class="scroll-btn right-btn">&#10095;</button>
+            </div>
+          </section>
+
+
+          <!-- Why Choose Us -->
+          <section class="why-choose-us">
+            <h2>🎂 Why Choose Dé Nice BAKES? 🍪</h2>
+            <ul>
+              <li>✔ Fresh and new all the time</li>
+              <li>✔ Customize your cake all you want</li>
+              <li>✔ Satisfaction guarantee</li>
+              <li>✔ Custom Creations, Made with Love</li>
+              <li>✔ Beautifully Designed Cakes</li>
+              <li>✔ Friendly Service, Every Time</li>
+            </ul>
+          </section>
+
+
+
+          
+          <!-- About Us -->
+          <section class="about-us">
+            <div class="about-container">
+              <div class="about-image">
+                <img src="logo.jpg" alt="Dé Nice BAKES Bakery">
+              </div> 
+              <div class="about-content">
+                <h2>🎂 About Dé Nice BAKES 🍪</h2>
+                <p>Founded with love and passion for the art of baking, <strong>Dé Nice BAKES</strong> is your go-to destination for handcrafted pastries, cakes, and breads — all made with premium ingredients and a touch of creativity.</p>
+                <p>Every cake and pastry we make tells a story — a story of joy, celebration, and craftsmanship. Whether it's your birthday, wedding, or simply a sweet craving, we make sure every bite is unforgettable.</p>
+              </div>
+            </div>
+          </section>
+ 
+          <!-- Footer -->
+          <footer>
+            <div class="footer-container">
+              <div class="footer-item"><i class="fas fa-phone-alt"></i><span>+63 912 345 6789</span></div>
+              <div class="footer-item"><i class="fas fa-envelope"></i><span>theenicebakes@gmail.com</span></div>
+              <div class="footer-item"><i class="fas fa-map-marker-alt"></i><span>123 Sweet Street, Pastry Town, PH</span></div>
+              <div class="footer-social">
+                <a href="https://www.tiktok.com/@de_nicebakes" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/de_nicebakesbyeira" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/share/1EEcM1HuGa/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+              </div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2025 Dé Nice BAKES. All rights reserved.</p></div>
+          </footer>
+
+          <!-- Scripts -->
+          <script>
+            function toggleMenu() {
+              const menu = document.querySelector('.menu_main');
+              menu.classList.toggle('active');
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+              const toggleLoginPassword = document.querySelector("#toggleLoginPassword");
+              const loginPasswordField = document.querySelector("#loginPassword");
+              const toggleSignupPassword = document.querySelector("#toggleSignupPassword");
+              const signupPasswordField = document.querySelector("#signupPassword");
+
+              if (toggleLoginPassword && loginPasswordField) {
+                toggleLoginPassword.addEventListener("click", () => {
+                  loginPasswordField.type = loginPasswordField.type === "password" ? "text" : "password";
+                  toggleLoginPassword.classList.toggle("fa-eye-slash");
+                });
+              }
+
+              if (toggleSignupPassword && signupPasswordField) {
+                toggleSignupPassword.addEventListener("click", () => {
+                  signupPasswordField.type = signupPasswordField.type === "password" ? "text" : "password";
+                  toggleSignupPassword.classList.toggle("fa-eye-slash");
+                });
+              }
+            });
+
+            window.openPopup = (id) => {
+              document.getElementById(id).style.display = "flex";
+              if (id === "signupErrorPopup") document.getElementById("signupEmail").focus();
+            };
+            window.closePopup = (id) => document.getElementById(id).style.display = "none";
+            window.switchPopup = (closeId, openId) => { closePopup(closeId); openPopup(openId); };
+            window.openLogin = () => openPopup("loginPopup");
+
+            function closeLogoutPopup() {
+              closePopup('logoutSuccessPopup');
+              window.location.href = "home.html";
+            }
+
+            /* ✅ NEW FUNCTION FOR ADMIN OK BUTTON */
+            window.goToAdmin = function() {
+              closePopup("adminWelcomePopup");
+              window.location.href = "admin.html";
+            };
+
+
+        // Cakes Slider
+            document.addEventListener("DOMContentLoaded", () => {
+              const slideTrack = document.querySelector('.slide-track');
+              const leftBtn = document.querySelector('.left-btn');
+              const rightBtn = document.querySelector('.right-btn');
+              let scrollAmount = 0;
+
+              rightBtn.addEventListener('click', () => {
+                const cardWidth = document.querySelector('.item-card').offsetWidth + 20;
+                const maxScroll = slideTrack.scrollWidth - slideTrack.clientWidth;
+                scrollAmount += cardWidth;
+                if (scrollAmount > maxScroll) scrollAmount = 0;
+                slideTrack.style.transform = `translateX(-${scrollAmount}px)`;
+              });
+
+              leftBtn.addEventListener('click', () => {
+                const cardWidth = document.querySelector('.item-card').offsetWidth + 20;
+                const maxScroll = slideTrack.scrollWidth - slideTrack.clientWidth;
+                scrollAmount -= cardWidth;
+                if (scrollAmount < 0) scrollAmount = maxScroll;
+                slideTrack.style.transform = `translateX(-${scrollAmount}px)`;
+              });
+            });
+
+            // Open Price Popup
+        function openPricePopup(card) {
+          const name = card.getAttribute('data-name');
+          const img = card.getAttribute('data-img');
+          const prices = JSON.parse(card.getAttribute('data-prices'));
+
+          document.getElementById('popupCakeName').innerText = name;
+          document.getElementById('popupCakeImage').src = img;
+
+          const tbody = document.getElementById('popupPriceBody');
+          tbody.innerHTML = ''; // Clear previous
+
+          for (let size in prices) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${size}</td><td>${prices[size]}</td>`;
+            tbody.appendChild(row);
+          }
+
+          openPopup('pricePopup');
+        }
+
+
+
+
+          </script>
+
+          <!-- Firebase -->
+          <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+          authDomain: "denicebakes.firebaseapp.com",
+          databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "denicebakes",
+          storageBucket: "denicebakes.firebasestorage.app",
+          messagingSenderId: "738071187737",
+          appId: "1:738071187737:web:4ad5ceb6fb4ee4a7fdf588",
+          measurementId: "G-YTTLPMJDSZ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Signup
+        window.signupUser = async function(event) {
+          event.preventDefault();
+          const name = document.getElementById("signupName").value.trim();
+          const email = document.getElementById("signupEmail").value.trim();
+          const password = document.getElementById("signupPassword").value;
+          const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*_])[A-Za-z\d!@#$%^&*_]{8,}$/;
+
+          if (!passwordRegex.test(password)) { 
+            openPopup('invalidPasswordPopup'); 
+            return; 
+          }
+
+          try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            await set(ref(db, "users/" + name), { name, email, createdAt: new Date().toISOString() });
+
+            closePopup("signupPopup");
+            openPopup("signupSuccessPopup");
+
+            document.getElementById("signupName").value = "";
+            document.getElementById("signupEmail").value = "";
+            document.getElementById("signupPassword").value = "";
+
+          } catch (error) { 
+            document.getElementById("signupErrorMessage").textContent = error.message.replace("Firebase: ", "");
+            openPopup('signupErrorPopup');
+          }
+        };
+
+        // Login
+        window.loginUser = async function(event) {
+          event.preventDefault();
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document.getElementById("loginPassword").value;
+
+          try {
+            await signInWithEmailAndPassword(auth, email, password);
+            closePopup("loginPopup");
+
+            /* ✅ ADMIN LOGIN (NO ALERT, SHOW POPUP) */
+            if (email === "admin@bake.com" && password === "admin123") {
+              openPopup("adminWelcomePopup");
+              return;
+            }
+
+            /* USER LOGIN LOGIC */
+            const dbRef = ref(db);
+            const snapshot = await get(child(dbRef, 'users'));
+            const users = snapshot.val() || {};
+            let username = "";
+
+            for (let key in users) {
+              if (users[key].email === email) {
+                username = users[key].name;
+                break;
+              }
+            }
+
+            if (username) {
+              document.getElementById("welcomeTitle").textContent = `Welcome, ${username}!`;
+              openPopup("welcomePopup");
+            }
+
+          } catch (error) {
+            openPopup("wrongPasswordPopup");
+          }
+        };
+
+        // Forgot Password
+        window.forgotPassword = async function(event) {
+          event.preventDefault();
+          const email = document.getElementById("forgotEmail").value;
+          try {
+            await sendPasswordResetEmail(auth, email);
+            closePopup("forgotPasswordPopup");
+            openPopup("forgotSuccessPopup");
+          } catch (error) {
+            alert(error.message);
+          }
+        };
+
+        // Auth state changes
+        onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    document.getElementById("loginMenu").style.display = "none";
+    document.getElementById("logoutMenu").style.display = "inline";
+    document.getElementById("orderMenu").style.display = "inline";
+    document.getElementById("userMenu").style.display = "inline";
+
+    // Get username from database
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, 'users'));
+    const users = snapshot.val() || {};
+    let username = "User";
+
+    for (let key in users) {
+      if (users[key].email === user.email) {
+        username = users[key].name;
+        break;
+      }
+    }
+
+    document.getElementById("usernameDisplay").textContent = username;
+
+  } else {
+    document.getElementById("loginMenu").style.display = "inline";
+    document.getElementById("logoutMenu").style.display = "none";
+    document.getElementById("orderMenu").style.display = "none";
+    document.getElementById("userMenu").style.display = "none";
+  }
+});
+
+
+        // Logout
+        window.logoutUser = async function() {
+          try {
+            await signOut(auth);
+            openPopup('logoutSuccessPopup');
+          } catch (error) {
+            alert(error.message);
+          }
+        };
+        </script>
+
+        </body>
+        </html>

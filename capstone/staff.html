@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Dé Nice BAKES</title>
+    <link rel="stylesheet" href="staff.css">
+</head>
+<body>
+    <header class="staff-header">
+        <h1>Staff Dashboard</h1>
+        <nav>
+            <a href="home.html">Home</a> |
+            <a href="#" onclick="logoutUser()">Logout</a>
+        </nav>
+    </header>
+
+    <main class="staff-panel">
+        <section>
+            <h2>Assigned Orders</h2>
+            <div id="assignedOrders">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+        </section>
+
+        <section>
+            <h2>Update Order Status</h2>
+            <form onsubmit="return updateOrderStatus(event)">
+                <input type="text" placeholder="Order ID" required>
+                <select required>
+                    <option value="">Select Status</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Ready for Pickup">Ready for Pickup</option>
+                    <option value="Delivered">Delivered</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Dé Nice BAKES. Staff Panel.</p>
+    </footer>
+
+    <script src="bake.js"></script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | Dé Nice BAKES</title>
+  <script src="https://kit.fontawesome.com/77c0b9dc19.js" crossorigin="anonymous"></script>
+
+  <style>
+/* ===== BODY ===== */
+body {
+  background: url(f44dd6aa-5cd3-47d8-bff7-2884b14d4009.jpg) no-repeat center center fixed;
+  background-size: cover;
+  color:#333;
+  overflow-x:hidden;
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:0;
+}
+
+/* ===== HEADER ===== */
+.Header_section {
+  background-color: #ff8ec7;
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container_fluid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.main_logo img {
+  height: 60px;
+  width: auto;
+  border-radius: 50%;
+}
+
+.menu_main nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu_main nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 5px 8px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.menu_main nav ul li a i {
+  margin-right: 6px;
+}
+
+
+
+
+.burger {
+  display: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+}
+
+@media(max-width:768px){
+  .burger { display: block; }
+  .menu_main { display: none; width: 100%; background: #ff8ec7; position: absolute; top: 70px; left: 0; text-align: center; padding: 10px 0;}
+  .menu_main.active { display: block; }
+  .menu_main nav ul { flex-direction: column; }
+  .menu_main nav ul li { margin: 10px 0; }
+}
+
+/* ===== USER PROFILE CARD ===== */
+.user-profile {
+  max-width: 850px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 22px;
+  border: 6px solid #FFB6C9;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  background-image: url('https://i.imgur.com/1tY0qZz.png');
+  background-size: 180px;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  animation: fadeIn 0.9s ease-in-out;
+  transition: 0.3s ease;
+}
+
+.user-profile:hover {
+  transform: scale(1.02);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+}
+
+h2 {
+  color: #E76F8A;
+  font-size: 32px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+h3 {
+  margin-top: 25px;
+  color: #444;
+  font-size: 20px;
+}
+
+/* Profile Picture */
+.profile-pic-box {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 5px solid #FFB6C9;
+  object-fit: cover;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.18);
+}
+
+.upload-btn {
+  margin-top: 10px;
+  cursor: pointer;
+  background: #E76F8A;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  display: inline-block;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #FFD6E0;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 16px;
+  background: #FFF0F5;
+}
+
+button {
+  background: #E76F8A;
+  border: none;
+  padding: 12px 20px;
+  margin-top: 15px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* ORDER HISTORY ITEMS */
+.order-item {
+  padding: 12px;
+  background: #FFF0F4;
+  border-left: 5px solid #FF8EAC;
+  margin-top: 10px;
+  border-radius: 10px;
+  list-style: none;
+  animation: fadeIn 0.5s ease-in-out;
+  font-size: 15px;
+}
+
+/* STATUS BADGE COLORS */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.pending { background: #ffda77; color: #7a5e00; }
+.accepted { background: #b4f89b; color: #225c00; }
+.completed { background: #9bd7ff; color: #004c73; }
+.declined { background: #ff9b9b; color: #7a0000; }
+.cancelled { background: #c7c7c7; color: #4a4a4a; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background-color: #c45b48;
+  color: #fff;
+  padding: 25px 5%;
+  font-size: 15px;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 10px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-item i { font-size: 1.2em; }
+
+.footer-social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.footer-social a {
+  color: #ffe1d6;
+  font-size: 1.4em;
+  transition: 0.2s;
+}
+
+.footer-social a:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
+.footer-bottom p { margin: 0; color: #ffeae3; }
+
+@media(max-width:768px){
+  .footer-container { flex-direction: column; text-align: center; }
+}
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="Header_section">
+  <div class="container_fluid">
+    <div class="main_logo">
+      <a href="home.html"><img src="logo.jpg" alt="Dé Nice Bakes Logo"></a>
+    </div>
+
+    <div class="burger" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="menu_main">
+      <nav>
+        <ul>
+          <li><a href="home.html" ><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="order.html" ><i class="fas fa-shopping-cart"></i> Order</a></li>
+          <li><a href="myorders.html" onclick="showMyOrders()"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+          <li><a href="user.html" ><i class="fas fa-user"></i> User</a></li>
+          <li><a href="javascript:void(0)" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- USER PROFILE -->
+<div class="user-profile">
+  <h2>Welcome, <span id="username">Loading...</span> 👋</h2>
+
+
+
+  <h3>Your Info</h3>
+  <form id="editProfileForm">
+    <input type="text" id="fullName" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <h3>Your Order History</h3>
+
+  <!-- Filters -->
+  <label for="orderFilter">Filter by Status:</label>
+  <select id="orderFilter">
+    <option value="all">All</option>
+    <option value="pending">Pending</option>
+    <option value="accepted">Accepted</option>
+    <option value="completed">Completed</option>
+    <option value="declined">Declined</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+
+  <label for="dateFilter">Filter by Date:</label>
+  <select id="dateFilter">
+    <option value="all">All Dates</option>
+    <option value="today">Today</option>
+    <option value="yesterday">Yesterday</option>
+    <option value="last3days">Last 3 Days</option>
+  </select>
+
+  <ul id="orderList">
+    <li>Loading orders...</li>
+  </ul>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-item"><i class="fas fa-phone-alt"></i> +63 912 345 6789</div>
+    <div class="footer-item"><i class="fas fa-envelope"></i> theenicebakes@gmail.com</div>
+    <div class="footer-item"><i class="fas fa-map-marker-alt"></i> 123 Sweet Street, Pastry Town, PH</div>
+    <div class="footer-social">
+      <a href="https://www.tiktok.com/@de_nicebakes" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/de_nicebakesbyeira" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/share/1EEcM1HuGa/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Dé Nice BAKES. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+  function toggleMenu() {
+    document.querySelector(".menu_main").classList.toggle("active");
+  }
+
+  // Highlight active link
+  document.querySelectorAll('.menu_main .nav-link').forEach(link => {
+    if(link.href === window.location.href) link.classList.add('active');
+    else link.classList.remove('active');
+  });
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, updateEmail, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "738071187737",
+  appId: "1:738071187737:web:4ad5ceb6fb4ee4a7fdf588"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+const usernameEl = document.getElementById("username");
+const fullNameInput = document.getElementById("fullName");
+const emailInput = document.getElementById("email");
+const orderList = document.getElementById("orderList");
+const profilePic = document.getElementById("profilePic");
+const profileUpload = document.getElementById("profileUpload");
+const orderFilter = document.getElementById("orderFilter");
+const dateFilterEl = document.getElementById("dateFilter");
+
+let ordersData = [];
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return location.href = "home.html";
+
+  const uid = user.uid;
+  const userRef = ref(db, "users/" + uid);
+  const snap = await get(userRef);
+
+  if (snap.exists()) {
+    const data = snap.val();
+    usernameEl.textContent = data.fullName || user.email;
+    fullNameInput.value = data.fullName || "";
+    emailInput.value = data.email || user.email;
+    profilePic.src = data.profilePic || "defaultpfp.png";
+  } else {
+    usernameEl.textContent = user.email;
+  }
+
+  loadOrders(uid);
+});
+
+profileUpload.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+  const storagePath = sRef(storage, "profilePics/" + user.uid + ".jpg");
+
+  await uploadBytes(storagePath, file);
+  const downloadURL = await getDownloadURL(storagePath);
+
+  await update(ref(db, "users/" + user.uid), { profilePic: downloadURL });
+
+  profilePic.src = downloadURL;
+  alert("Profile picture updated!");
+});
+
+editProfileForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const user = auth.currentUser;
+
+  await updateEmail(user, emailInput.value.trim());
+  await update(ref(db, "users/" + user.uid), {
+    fullName: fullNameInput.value.trim(),
+    email: emailInput.value.trim()
+  });
+
+  alert("Profile updated!");
+});
+
+async function loadOrders(uid) {
+  const orderRef = ref(db, "orders");
+  const snap = await get(orderRef);
+
+  orderList.innerHTML = "";
+  ordersData = [];
+
+  if (snap.exists()) {
+    const allOrders = snap.val();
+    let found = false;
+
+    Object.values(allOrders).forEach(order => {
+      if (order.userId === uid || order.email === auth.currentUser.email) {
+        found = true;
+        ordersData.push(order);
+      }
+    });
+
+    if (!found) orderList.innerHTML = "<li>No orders yet.</li>";
+    else renderOrders();
+  } else {
+    orderList.innerHTML = "<li>No orders found.</li>";
+  }
+}
+
+function renderOrders(statusFilter = "all", dateFilter = "all") {
+  orderList.innerHTML = "";
+
+  const now = new Date();
+  const filteredOrders = ordersData.filter(order => {
+    const orderDate = new Date(order.date);
+
+    const statusMatch = statusFilter === "all" ? true : (order.status || "Pending").toLowerCase() === statusFilter;
+
+    let dateMatch = true;
+    if (dateFilter === "today") {
+      dateMatch = orderDate.toDateString() === now.toDateString();
+    } else if (dateFilter === "yesterday") {
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      dateMatch = orderDate.toDateString() === yesterday.toDateString();
+    } else if (dateFilter === "last3days") {
+      const threeDaysAgo = new Date(now);
+      threeDaysAgo.setDate(now.getDate() - 2);
+      dateMatch = orderDate >= threeDaysAgo && orderDate <= now;
+    }
+
+    return statusMatch && dateMatch;
+  });
+
+  if (filteredOrders.length === 0) {
+    orderList.innerHTML = "<li>No orders found for this filter.</li>";
+    return;
+  }
+
+  filteredOrders.forEach(order => {
+    const status = (order.status || "Pending").toLowerCase();
+
+    const li = document.createElement("li");
+    li.className = "order-item";
+
+    li.innerHTML = `
+      <strong>${order.productName}</strong> — 
+      ₱${order.total} — 
+      ${order.date}
+      <span class="status-badge ${status}">${order.status || "Pending"}</span>
+    `;
+
+    orderList.appendChild(li);
+  });
+}
+
+orderFilter.addEventListener("change", () => {
+  renderOrders(orderFilter.value, dateFilterEl.value);
+});
+
+dateFilterEl.addEventListener("change", () => {
+  renderOrders(orderFilter.value, dateFilterEl.value);
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+  location.href = "home.html";
+});
+</script>
+
+</body>
+</html>

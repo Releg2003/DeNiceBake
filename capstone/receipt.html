@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipt | Dé Nice Bakes</title>
+
+<!-- HTML2CANVAS -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<!-- PRELOAD LOGO -->
+<link rel="preload" href="img/denicebakes-logo.png.jpg" as="image">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+body { background: #fff5fb; padding: 20px; }
+
+/* RECEIPT CARD */
+.receipt-card {
+  background:#fff;
+  width:90%;
+  max-width:450px;
+  margin:0 auto;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.receipt-card img {
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.receipt-card h3 { color:#e033a9; margin-bottom:10px; }
+.receipt-card p { margin:6px 0; font-size:1rem; }
+strong { color:#e033a9; }
+
+.btn-box { text-align:center; margin-top:25px; }
+
+button {
+  background:#e91e63;
+  color:#fff;
+  border:none;
+  border-radius:25px;
+  padding:10px 20px;
+  font-weight:600;
+  cursor:pointer;
+  margin:5px;
+  box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+button:hover{ opacity:0.9; }
+</style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;color:#e033a9;">Order Receipt</h2>
+
+<div class="receipt-card" id="receiptCard">
+  <p style="text-align:center;color:#e033a9;font-weight:600;">Loading receipt...</p>
+</div>
+
+<div class="btn-box">
+  <button id="downloadBtn">Download Receipt as PNG</button>
+  <button onclick="window.location.href='myorders.html'">Back to My Orders</button>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "509609676740",
+  appId: "1:509609676740:web:f86e2a53e4b9b8efb2a48b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* GET ORDER ID FROM URL */
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get("order");
+const receiptCard = document.getElementById("receiptCard");
+
+if (!orderId) {
+  receiptCard.innerHTML = `<p style="color:red;text-align:center;">Invalid receipt link.</p>`;
+} else {
+  loadReceipt(orderId);
+}
+
+/* LOAD RECEIPT */
+async function loadReceipt(id) {
+  const orderRef = ref(db, "orders/" + id);
+  const snap = await get(orderRef);
+
+  if (!snap.exists()) {
+    receiptCard.innerHTML = `<p style="color:red;text-align:center;">Receipt not found.</p>`;
+    return;
+  }
+
+  const o = snap.val();
+
+  receiptCard.innerHTML = `
+    <img src="${o.productImage || 'no-image.jpg'}" crossOrigin="anonymous">
+
+    <h3>${o.productName}</h3>
+
+    <p><strong>Status:</strong> ${o.status}</p>
+    <p><strong>Size:</strong> ${o.size}</p>
+    <p><strong>Quantity:</strong> ${o.quantity}</p>
+    <p><strong>Candles:</strong> ${o.candles}</p>
+    <p><strong>Message:</strong> ${o.message || "None"}</p>
+
+    <p><strong>Payment:</strong> ${o.paymentMode}</p>
+    <p><strong>Delivery:</strong> ${o.deliveryMode}</p>
+    <p><strong>Pickup Date:</strong> ${formatDate(o.pickupDate)}</p>
+
+    <p><strong>Total Paid:</strong> ₱${Number(o.total).toLocaleString("en-PH", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}</p>
+
+    <p><strong>Date Ordered:</strong> ${o.date?.split("T")[0]}</p>
+    <p><strong>Order ID:</strong> ${id}</p>
+
+    <!-- ⭐ OFFICIAL LOGO INSIDE RECEIPT ⭐ -->
+    <div style="text-align:center;margin-top:30px;">
+      <img src="logo.jpg"
+           style="width:160px;"
+           crossOrigin="anonymous">
+      <p style="color:#e033a9;margin-top:5px;font-weight:600;"></p>
+    </div>
+  `;
+}
+</script>
+
+<!-- PNG DOWNLOAD -->
+<script>
+document.getElementById("downloadBtn").addEventListener("click", function () {
+
+    const receipt = document.getElementById("receiptCard");
+
+    html2canvas(receipt, {
+        scale: 3,
+        useCORS: true
+    }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "receipt.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+
+});
+
+function formatDate(dateString) {
+  if (!dateString) return "Not set";
+
+  const date = new Date(dateString);
+
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+</script>
+
+</body>
+</html>

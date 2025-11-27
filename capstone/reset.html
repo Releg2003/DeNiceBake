@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reset Password | Dé Nice Bakes</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .reset-container {
+      width: 360px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #e033a9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c0288c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reset-container">
+    <h2>Reset Your Password</h2>
+    <input type="password" id="newPassword" placeholder="New Password" />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+    <button id="resetBtn">Save</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    // ✅ Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Password Strength Regex (8+ chars, 1 uppercase, 1 special)
+    function validatePassword(pwd) {
+      const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+=-]).{8,}$/;
+      return regex.test(pwd);
+    }
+
+    // ✅ Handle Reset
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const confirmPassword = document.getElementById("confirmPassword").value.trim();
+      const params = new URLSearchParams(window.location.search);
+      const oobCode = params.get("oobCode");
+
+      if (!validatePassword(newPassword)) {
+        alert("Password must be at least 8 characters, include 1 uppercase and 1 special character (_ allowed).");
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      try {
+        await confirmPasswordReset(auth, oobCode, newPassword);
+        alert("Password reset successfully!");
+        window.location.href = "login.html"; // redirect after reset
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>

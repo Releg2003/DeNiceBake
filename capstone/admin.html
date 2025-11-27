@@ -1,0 +1,2226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Dé Nice BAKES</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://kit.fontawesome.com/77c0b9dc19.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+</script>
+  <style>
+    :root {
+      --pink: #ff8ec7;
+      --light-pink: #ffe0ef;
+      --white: #fff;
+      --gray: #555;
+      --bg: #fff5fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      background-color: var(--bg);
+      color: var(--gray);
+    }
+
+    h1, h2 {
+      color: var(--white);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: linear-gradient(180deg, var(--pink), #fdbfd9);
+      min-height: 100vh;
+      color: var(--white);
+      padding: 30px 20px;
+      position: fixed;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
+
+    .sidebar .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar .logo img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 3px solid var(--white);
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      margin-top: 20px;
+    }
+
+    .sidebar nav ul li {
+      padding: 12px 20px;
+      margin: 10px 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar nav ul li:hover,
+    .sidebar nav ul li.active {
+      background-color: var(--white);
+      color: var(--pink);
+      transform: scale(1.03);
+    }
+
+    .main-content {
+  margin-left: 310px;
+  padding: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+    .dashboard-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: var(--light-pink);
+      color: var(--pink);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .remove-btn {
+      background-color: var(--pink);
+      color: var(--white);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .remove-btn:hover {
+      background-color: #ff72b6;
+    }
+
+    .accept-btn, .decline-btn {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 5px;
+      font-weight: 600;
+      color: white;
+    }
+    .accept-btn { background-color: #4CAF50; }
+    .decline-btn { background-color: #e033a9; }
+    .accept-btn:hover { background-color: #45a049; }
+    .decline-btn:hover { background-color: #c02788; }
+.order-edit-btn {
+  background-color: #e74c3c; 
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.order-edit-btn:hover {
+  background-color: #c0392b;
+}
+
+    /* --- Popup Background --- */
+/* Fullscreen Background */
+#productPopupBg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+/* Center Popup Box */
+.product-popup {
+  width: 520px;
+  background: white;
+  border-radius: 16px;
+  padding: 35px 28px;
+  position: relative;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+  animation: popIn 0.25s ease;
+}
+
+@keyframes popIn {
+  from {transform: scale(0.9); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: #ff4d6d;
+  border: none;
+  color: white;
+  font-size: 18px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.close-btn:hover {
+  background: #ff264f;
+}
+
+/* Title */
+.popup-title {
+  margin: 10px 0 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff4d92;
+  text-align: center;
+}
+
+/* Form Styling */
+.popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.full {
+  width: 100%;
+}
+
+label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px 0;
+  background: var(--pink);
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  background: #ff62b8;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="admin-container">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="logo.jpg" alt="Logo">
+      <h2>Admin Panel</h2>
+    </div>
+    <nav>
+      <ul>
+        <li class="active">Dashboard</li>
+        <li>Products</li>
+        <li>Orders</li>
+        <li>Logs</li>
+        <li id="logoutBtn">Logout</li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+  <section class="dashboard-section" data-section="overview">
+  <h1 style="text-align:center; margin-bottom:25px;">Dashboard Overview</h1>
+
+  <!-- STAT CARDS -->
+  <div class="dashboard-overview" 
+       style="display:flex; flex-wrap:wrap; justify-content:center; gap:25px;">
+
+    <div class="overview-box" style="background:white; border-radius:12px; padding:25px; 
+        text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); width:230px;">
+      <i class="fas fa-peso-sign" style="font-size:28px; color:var(--pink); margin-bottom:10px;"></i>
+      <h3 style="color:var(--pink); font-size:18px;">Total Sales</h3>
+      <p id="totalSales" style="font-size:26px; font-weight:bold; margin-top:8px;">₱0</p>
+    </div>
+
+    <div class="overview-box" style="background:white; border-radius:12px; padding:25px; 
+        text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); width:230px;">
+      <i class="fas fa-cookie-bite" style="font-size:28px; color:var(--pink); margin-bottom:10px;"></i>
+      <h3 style="color:var(--pink); font-size:18px;">Active Products</h3>
+      <p id="activeProducts" style="font-size:26px; font-weight:bold; margin-top:8px;">0</p>
+    </div>
+
+    <div class="overview-box" style="background:white; border-radius:12px; padding:25px; 
+        text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); width:230px;">
+      <i class="fas fa-hourglass-half" style="font-size:28px; color:var(--pink); margin-bottom:10px;"></i>
+      <h3 style="color:var(--pink); font-size:18px;">Pending Orders</h3>
+      <p id="pendingOrders" style="font-size:26px; font-weight:bold; margin-top:8px;">0</p>
+    </div>
+
+    <div class="overview-box" style="background:white; border-radius:12px; padding:25px; 
+        text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); width:230px;">
+      <i class="fas fa-users" style="font-size:28px; color:var(--pink); margin-bottom:10px;"></i>
+      <h3 style="color:var(--pink); font-size:18px;">Total Users</h3>
+      <p id="totalCustomers" style="font-size:26px; font-weight:bold; margin-top:8px;">0</p>
+    </div>
+  </div>
+
+
+  
+  <!-- CHART AREA (kept same IDs so your existing chart JS still works) -->
+  <div class="dashboard-charts" 
+       style="display:flex; justify-content:center; flex-wrap:wrap; gap:40px; margin-top:40px;">
+    <div class="chart-box" 
+         style="background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
+         padding:20px; width:500px;">
+      <h3 style="color:var(--pink); text-align:center; margin-bottom:10px;">Sales Chart</h3>
+      <canvas id="salesChart" height="220"></canvas>
+    </div>
+
+    <div class="chart-box" 
+         style="background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
+         padding:20px; width:500px;">
+      <h3 style="color:var(--pink); text-align:center; margin-bottom:10px;">Stock Chart</h3>
+      <canvas id="stockChart" height="220"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="dashboard-section" data-section="products">
+     <button id="openPopupBtn" 
+        style="padding:10px 16px;background:var(--pink);color:white;
+               border:none;border-radius:8px;cursor:pointer;margin-bottom:15px;">
+   Add New Product
+</button>
+
+<!-- 🔥 POPUP BACKGROUND -->
+<div id="productPopupBg" class="popup-bg">
+  <div class="product-popup">
+
+    <button id="closePopupBtn" class="close-btn">×</button>
+
+    <h2 class="popup-title">Add New Product</h2>
+
+    <form id="productForm" class="popup-form">
+
+      <div class="form-group">
+        <label>Category</label>
+        <select id="productCategory" required>
+          <option value="">Select Category</option>
+          <option value="Cupcakes">Cupcakes</option>
+          <option value="Cookies">Cookies</option>
+          <option value="Cakes">Cakes</option>
+          <option value="Drinks">Drinks</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="productName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Price</label>
+          <input type="number" id="productPrice" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Available Stock</label>
+          <input type="number" id="productStock" required>
+        </div>
+
+        <div class="form-group">
+          <label>Image</label>
+          <input type="file" id="productImage" accept="image/*" required>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Description</label>
+        <textarea id="productDescription" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Add Product</button>
+    </form>
+
+  </div>
+</div>
+
+
+<h3 style="margin-bottom:10px;">Product List</h3>
+
+<select id="productCategoryFilter" 
+        style="padding:6px 10px; border-radius:8px; border:1px solid #ccc; 
+               font-size:14px; margin-bottom:15px;">
+  <option value="all">All</option>
+  <option value="Cupcakes">Cupcakes</option>
+  <option value="Cookies">Cookies</option>
+  <option value="Cakes">Cakes</option>
+  <option value="Drinks">Drinks</option>
+</select>
+
+<!-- Dynamic product details -->
+<div id="cakeFields" style="display:none; margin-top:10px;">
+  <label>Cake Size:</label>
+  <input type="text" id="cakeSize" placeholder="e.g. 6-inch, 8-inch">
+
+  <label>With Candles?</label>
+  <select id="cakeCandles">
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+</div>
+
+<div id="boxFields" style="display:none; margin-top:10px;">
+  <label>Box Size:</label>
+  <select id="boxSize">
+    <option value="3 pcs">3 pcs</option>
+    <option value="6 pcs">6 pcs</option>
+    <option value="12 pcs">12 pcs</option>
+  </select>
+</div>
+
+<div id="drinkFields" style="display:none; margin-top:10px;">
+  <label>Drink Size (oz):</label>
+  <input type="number" id="drinkOz" placeholder="e.g. 16, 22">
+</div>
+
+
+      <table id="productTable">
+        <thead>
+         
+          <tr>
+            <th>Image</th><th>Name</th><th>Price</th><th>Stock</th><th>Date</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="6">Loading...</td></tr></tbody>
+      </table>
+    </section>
+
+
+
+
+<section class="dashboard-section" data-section="orders">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h2 style="color:#ea5cbd;">Customer Orders</h2>
+
+    <select id="orderFilter" style="padding:6px 10px;border-radius:8px;border:1px solid #ccc;font-size:14px;">
+      <option value="all">All Orders</option>
+      <option value="today">Today</option>
+      <option value="yesterday">Yesterday</option>
+      <option value="last3">Last 3 Days</option>
+      <option value="last7">Last 7 Days</option>
+      <option value="last30">Last Month</option>
+    </select>
+  </div>
+
+<select id="orderCategoryFilter" style="padding:6px 10px;border-radius:8px;border:1px solid #ccc;font-size:14px; margin-left:10px;">
+  <option value="all">All Categories</option>
+  <option value="Cupcakes">Cupcakes</option>
+  <option value="Cookies">Cookies</option>
+  <option value="Cakes">Cakes</option>
+  <option value="Drinks">Drinks</option>
+</select>
+
+
+  <table id="ordersTable">
+    <thead>
+  <tr>
+    <th>Email</th>
+    <th>Product</th>
+    <th>Category</th>   <!-- ⭐ NEW -->
+    <th>Total</th>
+    <th>Payment</th>
+    <th>Delivery</th>
+    <th>Pickup</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
+    <tbody><tr><td colspan="9">Loading...</td></tr></tbody>
+  </table>
+</section>
+
+
+    <section class="dashboard-section" data-section="logs">
+  <h2>Activity Logs</h2>
+
+  <!-- 🔍 Filter -->
+  <select id="logFilter" 
+    style="padding:6px 10px;border-radius:8px;border:1px solid #ccc;font-size:14px;margin-bottom:10px;">
+    <option value="all">All</option>
+    <option value="today">Today</option>
+    <option value="yesterday">Yesterday</option>
+    <option value="last3">Last 3 Days</option>
+    <option value="last7">Last 7 Days</option>
+    <option value="last30">Last Month</option>
+  </select>
+
+  <!-- 📋 Table -->
+  <table id="logsTable">
+    <thead>
+      <tr>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="3" style="text-align:center;">Loading logs...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+  </main>
+</div>
+<!-- 🔔 Product Added Notification Popup -->
+<div id="productNotif" class="notif">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="productNotifMsg">Product added successfully!</span>
+</div>
+
+<style>
+/* 🔔 Product Notification Style (similar to order) */
+#productNotif {
+  position: fixed;
+  top: 20px;
+  right: -400px;
+  background: #fff;
+  color: #333;
+  border-left: 6px solid #4CAF50;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: right 0.5s ease, opacity 0.3s;
+  z-index: 9999;
+}
+#productNotif.show {
+  right: 20px;
+}
+#productNotif i {
+  color: #4CAF50;
+  font-size: 20px;
+}
+/* 🔥 Background layer */
+.popup-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999; /* top most */
+}
+
+/* 🔥 Popup box */
+.popup-box {
+  background: white;
+  padding: 25px;
+  width: 330px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+}
+
+.popup-box button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  background: var(--pink);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.popup-box button:hover {
+  background: #ff72b6;
+}
+
+
+</style>
+
+<script>
+
+
+// ✅ Show Product Added Popup
+function showProductNotif(message = "Product added successfully!") {
+  const notif = document.getElementById("productNotif");
+  const msg = document.getElementById("productNotifMsg");
+  msg.textContent = message;
+  notif.classList.add("show");
+
+  setTimeout(() => {
+    notif.classList.remove("show");
+  }, 3000); // hide after 3 seconds
+}
+</script>
+
+<!-- ✅ Only one nav script kept -->
+<script>
+const navItems = document.querySelectorAll(".sidebar nav ul li");
+const sections = document.querySelectorAll(".dashboard-section");
+
+const keys = ["overview", "products",  "orders", "logs"];
+
+
+navItems.forEach((item, i) => {
+  item.addEventListener("click", () => {
+    navItems.forEach(n => n.classList.remove("active"));
+    item.classList.add("active");
+    sections.forEach(s => s.style.display = "none");
+
+    const target = document.querySelector(`[data-section="${keys[i]}"]`);
+    if (target) target.style.display = "block";
+  });
+});
+
+document.querySelector('[data-section="overview"]').style.display = "block";
+</script>
+
+
+
+<!-- 🔔 Notification Popup -->
+<div id="orderNotif" class="notif">
+  <i class="fa-solid fa-bell"></i>
+  <span id="notifMsg">New order received!</span>
+</div>
+
+<style>
+/* 🔔 Notification Style */
+.notif {
+  position: fixed;
+  top: 20px;
+  right: -400px;
+  background: #fff;
+  color: #333;
+  border-left: 6px solid #ff9900;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: right 0.5s ease, opacity 0.3s;
+  z-index: 9999;
+}
+.notif.show {
+  right: 20px;
+}
+.notif i {
+  color: #ff9900;
+  font-size: 20px;
+}
+/* Fullscreen background */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+/* Box */
+.popup-box {
+    background: white;
+    padding: 30px;
+    width: 350px;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+}
+
+/* Title */
+.popup-title {
+    color: #ff66a3;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* OK button */
+.popup-btn {
+    margin-top: 15px;
+    background-color: #ff66b3;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    font-size: 16px;
+}
+
+.popup-btn:hover {
+    background-color: #ff80c1;
+    transform: scale(1.07);
+}
+#orderPopup {
+    display: none;        /* Hide until needed */
+}
+.popup-overlay {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: #1e1e1e;
+  padding: 20px 30px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+}
+
+.popup-box button {
+  margin-top: 15px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #7cb8ff;
+  cursor: pointer;
+}
+
+.edit-product-btn:hover {
+  background-color: #c0392b;
+}
+
+</style>
+
+<script>
+// Open popup
+document.getElementById("openPopupBtn").onclick = () => {
+  document.getElementById("productPopupBg").style.display = "flex";
+};
+
+// Close popup
+document.getElementById("closePopupBtn").onclick = () => {
+  document.getElementById("productPopupBg").style.display = "none";
+};
+
+// Close popup when clicking outside the box
+document.getElementById("productPopupBg").onclick = (e) => {
+  if (e.target.id === "productPopupBg") {
+    document.getElementById("productPopupBg").style.display = "none";
+  }
+};
+
+</script>
+
+<!-- ✅ Main logic -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "738071187737",
+  appId: "1:738071187737:web:4ad5ceb6fb4ee4a7fdf588"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const logsRef = ref(db, "logs/");
+const supabase = createClient(
+  "https://enpvcrplczimttwskeee.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVucHZjcnBsY3ppbXR0d3NrZWVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzMzE5NzcsImV4cCI6MjA3NzkwNzk3N30.rUbgZB-QTR3Vgy7XpNUgNGUhjNIKZBC_eFtVVoZFQcM"
+);
+
+
+let stockChart; // global chart instance
+
+function setupStockChart() {
+  // Ensure the chart context is selected
+const ctx = document.getElementById("stockChart").getContext("2d");
+
+// Example data for the chart (you'll be using your dynamic data here)
+const labels = ["UbeDream", "Black forest", "Signature chocolate", "Raisin oatmeal cookies", "Red Velvet Vixen"];
+const stockValues = [35, 28, 42, 30, 48];  // Example stock quantities
+
+// Now configure and create the chart
+const stockChart = new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: labels, // Array of product names
+    datasets: [{
+      label: "Current Stock",
+      data: stockValues, // Array of stock numbers
+      backgroundColor: "rgba(255, 142, 199, 0.9)",
+      borderColor: "#ff8ec7",
+      borderWidth: 1,
+      borderRadius: 6,
+      barPercentage: 0.6,
+      categoryPercentage: 0.7,
+      hoverBackgroundColor: "#ffb3d6",
+    }]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 800, easing: "easeOutQuart" },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: "#ffe0ef" },
+        title: { display: true, text: "Stock Quantity" }
+      },
+      x: {
+        grid: { display: false },
+        title: { display: true, text: "Products" },
+        ticks: {
+          color: "#444",
+          font: { size: 13, weight: "500" },
+          maxRotation: 45, // Rotates the labels to prevent overlap
+          minRotation: 45, // Rotates the labels to prevent overlap
+        }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "#ff8ec7",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        cornerRadius: 10
+      }
+    }
+  }
+});
+
+function loadAllUsers() {
+    const usersRef = ref(db, "users");
+
+    onValue(usersRef, (snapshot) => {
+        const users = snapshot.val() || {};
+        const listEl = document.getElementById("userList");
+        listEl.innerHTML = "";
+
+        Object.values(users).forEach(user => {
+            if (user.email !== "admin@gmail.com") {
+                let li = document.createElement("li");
+                li.textContent = user.email;
+                li.style.padding = "5px 0";
+                listEl.appendChild(li);
+            }
+        });
+
+        document.getElementById("userListPopup").style.display = "flex";
+    });
+}
+
+
+  // 🔁 Real-time Firebase listener
+  const productsRef = ref(db, "products");
+  onValue(productsRef, (snapshot) => {
+    const products = snapshot.val() || {};
+
+    const labels = [];
+    const stockValues = [];
+
+    for (const id in products) {
+      const p = products[id];
+      labels.push(p.name);
+      stockValues.push(p.stock);
+    }
+
+    stockChart.data.labels = labels;
+    stockChart.data.datasets[0].data = stockValues;
+    stockChart.update();
+  });
+}
+
+// ✅ Initialize when overview loads
+setupStockChart();
+
+/* ============================
+   ✅ AUTHENTICATION GUARD
+============================ */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+   showPopup();
+ window.location.href = "home.html";
+    return;
+  }
+
+  if (user.email !== "admin@bake.com") {
+    alert("Access denied.");
+    window.location.href = "home.html";
+    return;
+  }
+
+  await deleteInvalidOrders();
+    loadProducts();
+    loadOrders();
+    loadLogs();
+    loadDashboardStats(); // ✅ add this line
+
+  });
+
+
+let salesChart; // global chart instance
+function setupSalesChart() {
+  /* ============================
+   ✅ SALES CHART (Completed Orders Only)
+============================ */
+const ctx = document.getElementById("salesChart").getContext("2d");
+
+const salesChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: [],
+    datasets: [{
+      label: "Total Sales",
+      data: [],
+      borderWidth: 2,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+
+// Load completed-only sales
+const ordersRef = ref(db, "orders");
+onValue(ordersRef, (snapshot) => {
+  const orders = snapshot.val() || {};
+  const dailyTotals = {};
+
+  for (const id in orders) {
+    const o = orders[id];
+
+    // ✔ Count ONLY completed
+    if (!o.status || o.status.toLowerCase() !== "completed") continue;
+
+    const d = new Date(o.date);
+    if (isNaN(d.getTime())) continue;
+
+    const dateKey = d.toISOString().split("T")[0]; // YYYY-MM-DD
+    const total = Number(o.total || 0);
+
+    if (!dailyTotals[dateKey]) dailyTotals[dateKey] = 0;
+    dailyTotals[dateKey] += total;
+  }
+
+  const sortedDates = Object.keys(dailyTotals).sort((a, b) => new Date(a) - new Date(b));
+  const sortedTotals = sortedDates.map(d => dailyTotals[d]);
+
+  // Full date format: November 27, 2025
+  salesChart.data.labels = sortedDates.map(dateStr => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  });
+
+  salesChart.data.datasets[0].data = sortedTotals;
+
+  salesChart.update();
+});
+
+}
+
+
+
+
+
+// ✅ Initialize it when overview section is shown
+setupSalesChart();
+
+
+/* ============================
+   ✅ DELETE INVALID ORDERS
+============================ */
+async function deleteInvalidOrders() {
+  const ordersSnap = await get(ref(db, "orders"));
+  if (!ordersSnap.exists()) return;
+
+  let count = 0;
+  const orders = ordersSnap.val();
+
+  for (const id in orders) {
+    const o = orders[id];
+    if (!o.productId || o.productId === "" || o.productId === "undefined") {
+      await set(ref(db, "orders/" + id), null);
+      count++;
+
+      await set(ref(db, "logs/" + Date.now()), {
+        message: `🗑️ Removed invalid order ${id}`,
+        timestamp: Date.now(),
+        type: "delete"
+      });
+    }
+  }
+
+  if (count > 0) alert(`Removed ${count} invalid orders.`);
+}
+
+
+/* ============================
+   ✅ ADD PRODUCT
+============================ */
+document.getElementById("productForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = productName.value.trim();
+  const price = Number(productPrice.value);
+  const stock = Number(productStock.value);
+  const category = productCategory.value;
+  const description = productDescription.value.trim();
+  const file = productImage.files[0];
+
+  if (!file) return alert("Select an image.");
+
+  try {
+    const filePath = `products/${Date.now()}_${file.name}`;
+    const upload = await supabase.storage.from("products").upload(filePath, file);
+    if (upload.error) throw upload.error;
+
+    const imageURL = supabase.storage.from("products").getPublicUrl(filePath).data.publicUrl;
+    const id = "prod_" + Date.now();
+
+    await set(ref(db, "products/" + id), {
+  name,
+  price,
+  stock,
+  description,
+  category,
+  imageURL,
+  date: new Date().toLocaleString(),
+
+  // EXTRA FIELDS
+  cakeSize: category === "cake" ? document.getElementById("cakeSize").value : "",
+  cakeCandles: category === "cake" ? document.getElementById("cakeCandles").value : "",
+  boxSize:
+    (category === "cupcake" || category === "cookies")
+      ? document.getElementById("boxSize").value
+      : "",
+  drinkOz: category === "drinks" ? document.getElementById("drinkOz").value : ""
+});
+
+
+
+    await set(ref(db, "logs/" + Date.now()), {
+      message: `🧁 Added product "${name}"`,
+      timestamp: Date.now(),
+      type: "add"
+    });
+
+    showProductNotif(`🧁 Product "${name}" added successfully!`);
+    e.target.reset();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error adding product.");
+  }
+});
+
+
+/* ============================
+   ✅ LOAD PRODUCTS
+============================ */
+/* ============================
+   ✅ LOAD PRODUCTS (Fully Working)
+============================ */
+function loadProducts() {
+  const tbody = document.querySelector("#productTable tbody");
+  const filterSelect = document.getElementById("productCategoryFilter");
+
+  // 🔄 Real-time listener
+  onValue(ref(db, "products"), (snapshot) => {
+    const products = snapshot.val() || {};
+    renderProducts(products);
+  });
+
+  // 🔁 Re-render when filter changes
+  filterSelect.addEventListener("change", () => {
+    get(ref(db, "products")).then((snap) => {
+      renderProducts(snap.val() || {});
+    });
+  });
+
+  function renderProducts(products) {
+  tbody.innerHTML = "";
+  const filter = filterSelect.value;
+
+  let found = false;
+
+  for (const id in products) {
+    const p = products[id];
+
+    // Only display products that match the selected category or "all"
+    if (filter !== "all" && p.category !== filter) continue;
+
+    found = true;
+
+    const row = document.createElement("tr");
+   row.innerHTML = `
+  <td><img src="${p.imageURL}" width="50"></td>
+  <td>${p.name}</td>
+ <td>₱${Number(p.price || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</td>
+
+ <td>
+  ${p.stock}
+  ${p.cakeSize ? "<br><small>Size: " + p.cakeSize + "</small>" : ""}
+  ${p.cakeCandles ? "<br><small>Candles: " + p.cakeCandles + "</small>" : ""}
+  ${p.boxSize ? "<br><small>Box: " + p.boxSize + "</small>" : ""}
+  ${p.drinkOz ? "<br><small>" + p.drinkOz + " oz</small>" : ""}
+</td>
+
+  <td>${p.date}</td>
+  <td>
+    <button class="edit-product-btn" data-id="${id}" style="background-color:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">Edit</button>
+    <button class="remove-btn" data-id="${id}">Remove</button>
+  </td>
+`;
+
+
+    tbody.appendChild(row);
+  }
+
+  if (!found) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No products found.</td></tr>`;
+  }
+
+  // Activate remove buttons
+  document.querySelectorAll(".remove-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const name = btn.closest("tr").children[1].innerText;
+      openDeletePopup(btn.dataset.id, name);
+    });
+  });
+}
+
+}
+
+let editingProductId = null;
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("edit-product-btn")) {
+    editingProductId = e.target.dataset.id;
+
+    // Load current product info
+    get(ref(db, "products/" + editingProductId)).then((snap) => {
+      if (!snap.exists()) return alert("Product not found.");
+      const p = snap.val();
+      document.getElementById("editProductPrice").value = p.price;
+      document.getElementById("editProductStock").value = p.stock;
+      document.getElementById("editProductPopupBg").style.display = "flex";
+    });
+  }
+});
+
+document.getElementById("cancelEditProductBtn").onclick = () => {
+  editingProductId = null;
+  document.getElementById("editProductPopupBg").style.display = "none";
+};
+
+document.getElementById("saveEditProductBtn").onclick = async () => {
+  if (!editingProductId) return;
+
+  const newPrice = Number(document.getElementById("editProductPrice").value);
+  const newStock = Number(document.getElementById("editProductStock").value);
+
+  if (isNaN(newPrice) || isNaN(newStock)) return alert("Enter valid numbers.");
+
+  await update(ref(db, "products/" + editingProductId), {
+    price: newPrice,
+    stock: newStock
+  });
+
+  await set(ref(db, "logs/" + Date.now()), {
+    message: `✏️ Product updated: ${editingProductId} | Price: ${newPrice}, Stock: ${newStock}`,
+    timestamp: Date.now(),
+    type: "update"
+  });
+
+  document.getElementById("editProductPopupBg").style.display = "none";
+  editingProductId = null;
+
+  showSuccessPopup("Product updated successfully!");
+};
+
+
+
+let productToDelete = null;
+
+function openDeletePopup(productId, productName) {
+    productToDelete = productId;
+    document.getElementById("deletePopupName").innerText =
+        `Are you sure you want to delete "${productName}"?`;
+    document.getElementById("deletePopupBg").style.display = "flex";
+}
+
+document.getElementById("cancelDeleteBtn").onclick = () => {
+    productToDelete = null;
+    document.getElementById("deletePopupBg").style.display = "none";
+};
+
+document.getElementById("confirmDeleteBtn").onclick = async () => {
+    if (!productToDelete) return;
+
+    await removeProduct(productToDelete);
+
+    productToDelete = null;
+    document.getElementById("deletePopupBg").style.display = "none";
+};
+
+function showSuccessPopup(message) {
+  document.getElementById("successMessage").innerText = message;
+  document.getElementById("successPopup").style.display = "flex";
+}
+
+function closeSuccessPopup() {
+  document.getElementById("successPopup").style.display = "none";
+}
+
+
+/* ============================
+   ✅ REMOVE PRODUCT (keep orders intact)
+============================ */
+async function removeProduct(id) {
+  const pSnap = await get(ref(db, "products/" + id));
+  if (!pSnap.exists()) return alert("Product not found.");
+
+  const p = pSnap.val();
+
+  const prefix = "/storage/v1/object/public/products/";
+  if (p.imageURL.includes(prefix)) {
+    const filePath = p.imageURL.split(prefix)[1];
+    try {
+      await supabase.storage.from("products").remove([filePath]);
+    } catch {}
+  }
+
+  await set(ref(db, "products/" + id), null);
+
+  await set(ref(db, "logs/" + Date.now()), {
+    message: `🗑️ Deleted product "${p.name}"`,
+    timestamp: Date.now(),
+    type: "delete"
+  });
+
+  // ✅ Show popup
+  showDeleteSuccess();
+}
+
+
+/* ======================================================= ✅ ACCEPT ORDER ======================================================= */
+async function acceptOrder(orderId, productId, qty) {
+    const prodRef = ref(db, "products/" + productId);
+    const orderRef = ref(db, "orders/" + orderId);
+    const prodSnap = await get(prodRef);
+    const orderSnap = await get(orderRef);
+    if (!prodSnap.exists() || !orderSnap.exists()) return alert("Data not found.");
+
+    const product = prodSnap.val();
+    const order = orderSnap.val();
+
+    // Prevent re-accepting
+    if (order.status && order.status.toLowerCase() === "accepted") {
+        return alert("Order already accepted.");
+    }
+    if (order.status && order.status.toLowerCase() === "declined") {
+        return alert("Order already declined.");
+    }
+
+    // Check stock before accepting
+    if (product.stock < qty) {
+        return alert("Not enough stock to accept this order.");
+    }
+
+    // Deduct stock and update order
+    await update(prodRef, { stock: product.stock - qty });
+    await update(orderRef, { status: "Accepted" });
+
+    // Log it with email
+    await set(ref(db, "logs/" + Date.now()), {
+        message: `✅ Order accepted for "${product.name}" (${qty} pcs) by ${order.email}. Stock reduced.`,
+        timestamp: Date.now(),
+        type: "update"
+    });
+
+    // Disable buttons in UI instantly
+    const btnAccept = document.querySelector(`[data-accept="${orderId}"]`);
+    const btnDecline = document.querySelector(`[data-decline="${orderId}"]`);
+    if (btnAccept) btnAccept.disabled = true;
+    if (btnDecline) btnDecline.disabled = true;
+
+  showOrderPopup("Order Accepted");
+
+    loadDashboardStats(); // refresh stats instantly
+}
+
+/* ======================================================= ❌ DECLINE ORDER ======================================================= */
+async function declineOrder(orderId, productId, qty) {
+    const prodRef = ref(db, "products/" + productId);
+    const orderRef = ref(db, "orders/" + orderId);
+    const prodSnap = await get(prodRef);
+    const orderSnap = await get(orderRef);
+    if (!prodSnap.exists() || !orderSnap.exists()) return alert("Data not found.");
+
+    const product = prodSnap.val();
+    const order = orderSnap.val();
+
+    // Prevent re-declining
+    if (order.status && order.status.toLowerCase() === "declined") {
+        return alert("Order already declined.");
+    }
+
+    // Only restore stock if it was previously accepted
+    if (order.status && order.status.toLowerCase() === "accepted") {
+        await update(prodRef, { stock: product.stock + qty });
+    }
+
+    // Update order status
+    await update(orderRef, { status: "Declined" });
+
+    // Log it with email
+    await set(ref(db, "logs/" + Date.now()), {
+        message: `❌ Order declined for "${product.name}" (${qty} pcs) by ${order.email}.`,
+        timestamp: Date.now(),
+        type: "delete"
+    });
+
+    // Disable buttons instantly
+    const btnAccept = document.querySelector(`[data-accept="${orderId}"]`);
+    const btnDecline = document.querySelector(`[data-decline="${orderId}"]`);
+    if (btnAccept) btnAccept.disabled = true;
+    if (btnDecline) btnDecline.disabled = true;
+
+    showOrderPopup("Order Declined");
+
+    loadDashboardStats(); // refresh stats instantly
+}
+
+// Expose functions globally so inline onclick buttons work
+window.acceptOrder = acceptOrder;
+window.declineOrder = declineOrder;
+
+
+/* ============================
+   ✅ LOAD ORDERS (fixed)
+============================ */
+function loadOrders() {
+  const tbody = document.querySelector("#ordersTable tbody");
+  const filterSelect = document.getElementById("orderFilter");
+  const categorySelect = document.getElementById("orderCategoryFilter");
+
+  let allOrders = {};
+  let allProducts = {};
+
+  // 🔄 Listen to database changes
+  onValue(ref(db, "orders"), async (snap) => {
+    allOrders = snap.val() || {};
+
+    const prodSnap = await get(ref(db, "products"));
+    allProducts = prodSnap.exists() ? prodSnap.val() : {};
+
+    renderOrders();
+  });
+
+  // Trigger re-render on dropdown change
+  filterSelect.addEventListener("change", () => renderOrders());
+  categorySelect.addEventListener("change", () => renderOrders());
+
+  function renderOrders() {
+    tbody.innerHTML = "";
+
+    const filter = filterSelect.value;
+    const categoryFilter = categorySelect.value;
+    const now = new Date();
+
+    const filtered = [];
+
+    for (const id in allOrders) {
+      const o = allOrders[id];
+      const orderDate = new Date(o.date);
+      const diffDays = (now - orderDate) / (1000 * 60 * 60 * 24);
+
+      // ============================
+      // ✅ DATE FILTER
+      // ============================
+      let include = false;
+      switch (filter) {
+        case "today":
+          include = diffDays < 1 && orderDate.getDate() === now.getDate();
+          break;
+        case "yesterday":
+          include = diffDays >= 1 && diffDays < 2;
+          break;
+        case "last3":
+          include = diffDays < 3;
+          break;
+        case "last7":
+          include = diffDays < 7;
+          break;
+        case "last30":
+          include = diffDays < 30;
+          break;
+        default:
+          include = true;
+      }
+
+      if (!include) continue;
+
+      // ============================
+      // ⭐ CATEGORY FILTER (NEW)
+      // ============================
+      const productCategory = allProducts[o.productId]?.category || "";
+
+      if (categoryFilter !== "all" && productCategory !== categoryFilter) {
+        continue;
+      }
+
+      filtered.push({ id, ...o });
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;">No orders match this filter.</td></tr>`;
+      return;
+    }
+
+    filtered
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .forEach((o) => {
+        const product = allProducts[o.productId];
+        const productName = product?.name || o.productName || "(Deleted product)";
+        const productCategory = product?.category || "-";
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${o.email}</td>
+          <td>${productName}</td>
+          <td>${productCategory}</td>
+          <td>${o.total}</td>
+          <td>${o.paymentMode}</td>
+          <td>${o.deliveryMode}</td>
+          <td>${o.pickupDate || "-"}</td>
+          <td>${new Date(o.date).toLocaleString()}</td>
+          <td>${o.status}</td>
+      <td>
+${
+  o.status === "Completed"
+    ? `<button class="view-receipt-btn" 
+        onclick="viewReceipt('${o.id}')" 
+        style="background-color: #5dade2; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+  View Receipt
+</button>
+`
+    : o.status === "Pending"
+      ? `<button class="accept-btn" data-accept="${o.id}" onclick="acceptOrder('${o.id}','${o.productId}',${o.quantity})">Accept</button>
+         <button class="decline-btn" data-decline="${o.id}" onclick="declineOrder('${o.id}','${o.productId}',${o.quantity})">Decline</button>
+         <button class="order-edit-btn" onclick="openEditOrder('${o.id}', '${o.status}')">Edit</button>`
+      : o.status === "Accepted"
+        ? `Accepted 
+           <button class="accept-btn" onclick="completeOrder('${o.id}')">Completed</button>
+           <button class="order-edit-btn" onclick="openEditOrder('${o.id}', '${o.status}')">Edit</button>`
+        : o.status === "Declined"
+          ? `Declined 
+             <button class="remove-btn" onclick="removeOrder('${o.id}')">Remove</button>
+             <button class="order-edit-btn" onclick="openEditOrder('${o.id}', '${o.status}')">Edit</button>`
+          : `Pending 
+             <button class="accept-btn" data-accept="${o.id}" onclick="acceptOrder('${o.id}','${o.productId}',${o.quantity})">Accept</button>
+             <button class="decline-btn" data-decline="${o.id}" onclick="declineOrder('${o.id}','${o.productId}',${o.quantity})">Decline</button>
+            <button class="order-edit-btn" onclick="openEditOrder('${o.id}', '${o.status}')">Edit</button>`
+}
+</td>
+
+
+
+
+
+
+        `;
+
+        tbody.appendChild(row);
+      });
+  }
+}
+
+
+
+    /* ✅ Attach Accept & Decline event listeners */
+    setTimeout(() => {
+      document.querySelectorAll(".accept-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          await acceptOrder(btn.dataset.id, btn.dataset.pid, Number(btn.dataset.qty));
+        });
+      });
+
+      document.querySelectorAll(".decline-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          await declineOrder(btn.dataset.id, btn.dataset.pid, Number(btn.dataset.qty));
+        });
+      });
+    }, 50);
+ 
+
+/* ============================
+   ✅ LOAD LOGS
+============================ */
+function loadLogs() {
+  const tbody = document.querySelector("#logsTable tbody");
+  const filterSelect = document.getElementById("logFilter");
+
+  let allLogs = {};
+
+  // 🔄 Listen real-time
+  onValue(ref(db, "logs"), (snap) => {
+    allLogs = snap.val() || {};
+    renderLogs();
+  });
+
+  filterSelect.addEventListener("change", () => renderLogs());
+
+  function renderLogs() {
+    tbody.innerHTML = "";
+    const filter = filterSelect.value;
+    const now = new Date();
+
+    const filteredLogs = Object.values(allLogs).filter((log) => {
+      const logDate = new Date(log.timestamp);
+      const diffDays = (now - logDate) / (1000 * 60 * 60 * 24);
+
+      switch (filter) {
+        case "today":
+          return diffDays < 1 && logDate.getDate() === now.getDate();
+        case "yesterday":
+          return diffDays >= 1 && diffDays < 2;
+        case "last3":
+          return diffDays < 3;
+        case "last7":
+          return diffDays < 7;
+        case "last30":
+          return diffDays < 30;
+        default:
+          return true;
+      }
+    });
+
+    if (filteredLogs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No logs found.</td></tr>`;
+      return;
+    }
+
+    filteredLogs
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .forEach((log) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${log.message}</td>
+          <td>${new Date(log.timestamp).toLocaleString()}</td>
+          <td>${log.type || "-"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+}
+
+/* ============================
+   ✅ DASHBOARD STATS with Smooth Animation + Pending Orders Fix
+============================ */
+let dashboardListenersSet = false;
+
+function animateCountUp(el, start, end, prefix = "") {
+  const duration = 700;
+  const steps = 30;
+  const increment = (end - start) / steps;
+  let current = start;
+  let count = 0;
+
+  const timer = setInterval(() => {
+    current += increment;
+    count++;
+    if (count >= steps) {
+      current = end;
+      clearInterval(timer);
+    }
+
+    // If prefix contains the peso sign, format as currency with 2 decimals
+    if (prefix && prefix.includes("₱")) {
+      // Ensure we display two decimals and thousands separator for PH locale
+      const formatted = Number(current).toLocaleString('en-PH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      el.textContent = prefix + formatted;
+    } else if (typeof end === "number") {
+      el.textContent = prefix + Math.round(current).toLocaleString();
+    } else {
+      el.textContent = prefix + current;
+    }
+  }, duration / steps);
+}
+
+
+
+function loadDashboardStats() {
+  const totalSalesEl = document.getElementById("totalSales");
+  const activeProductsEl = document.getElementById("activeProducts");
+  const pendingOrdersEl = document.getElementById("pendingOrders");
+  const totalCustomersEl = document.getElementById("totalCustomers");
+
+  if (!dashboardListenersSet) {
+    dashboardListenersSet = true;
+
+    // 🔹 Real-time products
+    onValue(ref(db, "products"), (productSnap) => {
+      document.getElementById("productCategoryFilter")
+        .addEventListener("change", loadProducts);
+
+      const products = productSnap.val() || {};
+      let activeCount = 0;
+      for (const id in products) {
+        const p = products[id];
+        if (p && p.stock > 0) activeCount++;
+      }
+
+      const oldValue = parseInt(activeProductsEl.textContent.replace(/\D/g, "")) || 0;
+      animateCountUp(activeProductsEl, oldValue, activeCount, "");
+    
+      // 🔹 Count all registered customers (excluding admin)
+onValue(ref(db, "users"), (userSnap) => {
+  const users = userSnap.val() || {};
+  let customerCount = 0;
+  for (const id in users) {
+    const u = users[id];
+    if (u.email && u.email !== "admin@bake.com") customerCount++;
+  }
+
+  const oldCustomers = parseInt(totalCustomersEl.textContent.replace(/\D/g, "")) || 0;
+  animateCountUp(totalCustomersEl, oldCustomers, customerCount, "");
+});
+
+    });
+
+    
+    
+    // 🔹 Real-time orders (for total sales + pending)
+    onValue(ref(db, "orders"), (orderSnap) => {
+      const orders = orderSnap.val() || {};
+      let totalSales = 0;
+      let pendingCount = 0;
+      const uniqueEmails = new Set();
+
+      for (const id in orders) {
+        const o = orders[id];
+        if (o.email) uniqueEmails.add(o.email);
+        if (["accepted", "completed"].includes(o.status?.toLowerCase())) {
+          totalSales += Number(o.total) || 0;
+        } else if (o.status?.toLowerCase() === "pending") {
+          pendingCount++;
+        }
+      }
+
+      const oldSales = parseInt(totalSalesEl.textContent.replace(/\D/g, "")) || 0;
+      const oldPending = parseInt(pendingOrdersEl.textContent.replace(/\D/g, "")) || 0;
+      const oldCustomers = parseInt(totalCustomersEl.textContent.replace(/\D/g, "")) || 0;
+
+      animateCountUp(totalSalesEl, oldSales, totalSales, "₱");
+      animateCountUp(pendingOrdersEl, oldPending, pendingCount, "");
+      animateCountUp(totalCustomersEl, oldCustomers, uniqueEmails.size, "");
+    });
+  } else {
+    refreshDashboardStats(totalSalesEl, activeProductsEl, pendingOrdersEl, totalCustomersEl);
+  }
+}
+
+async function refreshDashboardStats(totalSalesEl, activeProductsEl, pendingOrdersEl, totalCustomersEl) {
+  const prodSnap = await get(ref(db, "products"));
+  const products = prodSnap.val() || {};
+  let activeCount = 0;
+  for (const id in products) {
+    const p = products[id];
+    if (p && p.stock > 0) activeCount++;
+  }
+
+  const orderSnap = await get(ref(db, "orders"));
+  const orders = orderSnap.val() || {};
+  let totalSales = 0;
+  let pendingCount = 0;
+  const uniqueEmails = new Set();
+
+  for (const id in orders) {
+    const o = orders[id];
+    if (o.email) uniqueEmails.add(o.email);
+    if (o.status?.toLowerCase() === "accepted") {
+      totalSales += Number(o.total) || 0;
+    } else if (o.status?.toLowerCase() === "pending") {
+      pendingCount++;
+    }
+  }
+
+  const oldSales = parseInt(totalSalesEl.textContent.replace(/\D/g, "")) || 0;
+  const oldActive = parseInt(activeProductsEl.textContent.replace(/\D/g, "")) || 0;
+  const oldPending = parseInt(pendingOrdersEl.textContent.replace(/\D/g, "")) || 0;
+  const oldCustomers = parseInt(totalCustomersEl.textContent.replace(/\D/g, "")) || 0;
+
+  animateCountUp(totalSalesEl, oldSales, totalSales, "₱");
+  animateCountUp(activeProductsEl, oldActive, activeCount, "");
+  animateCountUp(pendingOrdersEl, oldPending, pendingCount, "");
+  animateCountUp(totalCustomersEl, oldCustomers, uniqueEmails.size, "");
+}
+
+/* ============================ ✅ LOG NEW ORDERS AS PENDING ============================ */
+onValue(ref(db, "orders"), (snap) => {
+    const orders = snap.val() || {};
+    for (const id in orders) {
+        const o = orders[id];
+        // Only log if no previous log exists for this order id
+        if (!o.loggedPending) {
+            const productName = o.productName || "(Deleted product)";
+            const qty = o.quantity || 1; // default to 1 if quantity missing
+            const logRef = ref(db, "logs/" + Date.now());
+            set(logRef, {
+                message: `⏳ New order received: "${productName}" (${qty} pcs) by ${o.email} (Pending)`,
+                timestamp: Date.now(),
+                type: "pending"
+            });
+            // Mark the order as logged to prevent duplicate logs
+            update(ref(db, "orders/" + id), { loggedPending: true });
+        }
+    }
+});
+
+
+/* ============================
+   ✅ LOGOUT
+============================ */
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "home.html";
+});
+
+// Show popup
+function showDeleteSuccess() {
+    document.getElementById("deleteSuccessMsg").innerText = "Product deleted successfully.";
+    document.getElementById("deleteSuccessBg").style.display = "flex";
+}
+
+// Close popup
+document.getElementById("deleteOkBtn").onclick = function () {
+    document.getElementById("deleteSuccessBg").style.display = "none";
+};
+
+function showOrderPopup(message) {
+    document.getElementById("orderPopupText").innerText = message;
+    document.getElementById("orderPopup").style.display = "flex";
+}
+
+document.getElementById("orderPopupOk").addEventListener("click", function() {
+    document.getElementById("orderPopup").style.display = "none";
+});
+
+function showPopup() {
+    document.getElementById("loginPopup").style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("loginPopup").style.display = "none";
+}
+onValue(logsRef, (snapshot) => {
+  const logs = snapshot.val() || {};
+  const logsBody = document.getElementById("logsBody");
+  logsBody.innerHTML = ""; // clear previous
+
+  // Sort logs by timestamp key (oldest first)
+  const sortedKeys = Object.keys(logs).sort((a, b) => a - b);
+
+  sortedKeys.forEach(key => {
+    const log = logs[key];
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${log.username}</td>
+      <td>${log.email}</td>
+      <td>${log.type.charAt(0).toUpperCase() + log.type.slice(1)}</td>
+      <td>${log.time}</td>
+    `;
+    logsBody.appendChild(row);
+  });
+});
+
+// Mark order as Completed
+async function completeOrder(orderId) {
+  const orderRef = ref(db, "orders/" + orderId);
+  const orderSnap = await get(orderRef);
+  if (!orderSnap.exists()) return alert("Order not found.");
+
+  await update(orderRef, { status: "Completed" });
+
+  await set(ref(db, "logs/" + Date.now()), {
+    message: `✔ Order ${orderId} marked as Completed.`,
+    timestamp: Date.now(),
+    type: "update"
+  });
+
+  showOrderPopup("Order Completed");
+  loadOrders();
+}
+
+// Remove declined order from list
+async function removeOrder(orderId) {
+  const orderRef = ref(db, "orders/" + orderId);
+  await set(orderRef, null);
+
+  await set(ref(db, "logs/" + Date.now()), {
+    message: `🗑️ Declined order ${orderId} removed.`,
+    timestamp: Date.now(),
+    type: "delete"
+  });
+
+  showOrderPopup("Order Removed");
+  loadOrders();
+}
+
+// Expose globally
+window.completeOrder = completeOrder;
+window.removeOrder = removeOrder;
+
+let editingStatusId = null;
+
+function openEditOrder(orderId, currentStatus) {
+  editingStatusId = orderId;
+
+  document.getElementById("editStatusSelect").value = currentStatus;
+  document.getElementById("editStatusPopupBg").style.display = "flex";
+}
+
+function closeEditStatus() {
+  document.getElementById("editStatusPopupBg").style.display = "none";
+}
+
+async function saveOrderStatus() {
+  const newStatus = document.getElementById("editStatusSelect").value;
+
+  if (!editingStatusId) return;
+
+  const orderRef = ref(db, "orders/" + editingStatusId);
+
+  // Update ONLY the status
+  await update(orderRef, { status: newStatus });
+
+  // Log the update
+  await set(ref(db, "logs/" + Date.now()), {
+    message: `✏️ Status of order ${editingStatusId} changed to ${newStatus}`,
+    timestamp: Date.now(),
+    type: "update"
+  });
+
+  closeEditStatus();
+  loadOrders();
+
+  // ✅ Show the popup instead of alert
+  showOrderPopup(`Order status changed to "${newStatus}"`);
+}
+
+// Make functions globally accessible
+window.openEditOrder = openEditOrder;
+window.closeEditStatus = closeEditStatus;
+window.saveOrderStatus = saveOrderStatus;
+
+// Replace your old viewReceipt(...) with this one
+async function viewReceipt(orderId) {
+  const orderSnap = await get(ref(db, "orders/" + orderId));
+  if (!orderSnap.exists()) return alert("Order not found.");
+  const order = orderSnap.val();
+
+  const productSnap = await get(ref(db, "products/" + order.productId));
+  const product = productSnap.exists() ? productSnap.val() : null;
+
+  // Format total
+  const formattedTotal = Number(order.total || 0).toLocaleString("en-PH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  // Format pickup date
+  const formattedPickup = order.pickupDate
+    ? (() => {
+        const d = new Date(order.pickupDate);
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        let hours = d.getHours();
+        const minutes = String(d.getMinutes()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        return `${mm}/${dd}/${yyyy} ${hours}:${minutes} ${ampm}`;
+      })()
+    : "N/A";
+
+  // NEW: Centered clean receipt layout
+ const receiptHtml = `
+  <div id="receiptCard" style="
+    width: 520px;
+    max-width: 100%;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: center;
+    margin: auto;
+  ">
+
+    <h2 style="color:#ff4f9a; margin:0 0 15px; font-size:26px;">Order Receipt</h2>
+
+    <img src="${product?.imageURL || ''}" 
+         alt="Product"
+         style="width:260px; height:auto; border-radius:10px; object-fit:cover; margin-bottom:15px;">
+
+    <h3 style="margin:0 0 10px; font-size:20px; color:#444;">
+      ${product?.name || order.productName || "Product"}
+    </h3>
+
+    <div style="font-size:14px; margin-top:10px; text-align:left; line-height:1.6;">
+      <p><strong>Customer:</strong> ${order.email || 'N/A'}</p>
+      <p><strong>Status:</strong> ${order.status || '-'}</p>
+      ${order.size ? `<p><strong>Size:</strong> ${order.size}</p>` : ''}
+      <p><strong>Quantity:</strong> ${order.quantity || 1}</p>
+      <p><strong>Candles:</strong> ${order.candles || 0}</p>
+      <p><strong>Message:</strong> ${order.message || 'None'}</p>
+      <p><strong>Payment:</strong> ${order.paymentMode || '-'}</p>
+      <p><strong>Delivery:</strong> ${order.deliveryMode || '-'}</p>
+      <p><strong>Pickup Date:</strong> ${formattedPickup}</p>
+
+      <!-- ⭐ Date Ordered added back -->
+      <p><strong>Date Ordered:</strong> ${new Date(order.date).toLocaleString()}</p>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #eee;margin:15px 0;">
+
+    <h3 style="margin:0 0 5px; font-size:16px; color:#666;">Total</h3>
+    <div style="font-size:26px; font-weight:700; color:#ff4fa6;">
+      ₱${formattedTotal}
+    </div>
+
+    <button id="downloadPngBtn" style="
+      width:100%;
+      padding:12px;
+      background:#ff4f9a;
+      color:white;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:600;
+      margin-top:20px;
+    ">
+      Download Receipt as PNG
+    </button>
+
+  </div>
+`;
+
+  // Insert HTML
+  document.getElementById("receiptContent").innerHTML = receiptHtml;
+
+  // Show popup
+  document.getElementById("receiptPopupBg").style.display = "flex";
+
+  // Close button
+  document.getElementById("closeReceiptBtn").onclick = () => {
+    document.getElementById("receiptPopupBg").style.display = "none";
+  };
+
+  // PNG DOWNLOAD
+  const downloadBtn = document.getElementById("downloadPngBtn");
+  downloadBtn.onclick = async () => {
+    const receiptCard = document.getElementById("receiptCard");
+
+    try {
+      const canvas = await html2canvas(receiptCard, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = `receipt_${orderId}.png`;
+      link.click();
+    } catch (err) {
+      console.error("PNG download error:", err);
+      alert("Failed to create PNG.");
+    }
+  };
+}
+
+// expose globally
+window.viewReceipt = viewReceipt;
+
+
+const categorySelectEl = document.getElementById("productCategory");
+
+categorySelectEl.addEventListener("change", () => {
+  const val = categorySelectEl.value;
+
+  document.getElementById("cakeFields").style.display = (val === "cake") ? "block" : "none";
+  document.getElementById("boxFields").style.display =
+      (val === "cupcake" || val === "cookies") ? "block" : "none";
+  document.getElementById("drinkFields").style.display = (val === "drinks") ? "block" : "none";
+});
+
+</script>
+
+<!-- DELETE CONFIRM POPUP -->
+<div id="deletePopupBg" style="
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4); display: none;
+    justify-content: center; align-items: center; z-index: 9999;">
+    
+    <div style="
+        background: #fff; padding: 25px; width: 320px;
+        border-radius: 15px; text-align: center;">
+        
+        <h3 style="color:#e649a0; margin-bottom:10px;">Delete Product</h3>
+        <p id="deletePopupName" style="margin-bottom:20px;">
+            Are you sure you want to delete this product?
+        </p>
+
+        <div style="display:flex; justify-content:center; gap:15px;">
+            <button id="cancelDeleteBtn" style="
+                background:#aaa; border:none; padding:8px 15px; 
+                border-radius:8px; color:white; cursor:pointer;">
+                Cancel
+            </button>
+
+            <button id="confirmDeleteBtn" style="
+                background:#e649a0; border:none; padding:8px 15px; 
+                border-radius:8px; color:white; cursor:pointer;">
+                Delete
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Delete Success Popup -->
+<div id="deleteSuccessBg" class="popup-overlay" style="display: none;">
+    <div class="popup-box">
+        <h2 class="popup-title">Success</h2>
+        <p id="deleteSuccessMsg">Product deleted successfully.</p>
+        <button id="deleteOkBtn" class="popup-btn">OK</button>
+    </div>
+</div>
+
+
+
+<div id="deleteSuccessBg" class="popup-bg" style="display:none;">
+  <div class="popup-box">
+    <h3>Product Deleted</h3>
+    <p>The product was removed successfully.</p>
+    <button id="deleteOkBtn">OK</button>
+  </div>
+</div>
+
+<div id="orderPopup" class="popup-overlay">
+  <div class="popup-box">
+    <p id="orderPopupText"></p>
+    <button id="orderPopupOk">OK</button>
+  </div>
+</div>
+
+<div id="loginPopup" class="popup-overlay">
+  <div class="popup-box">
+    <p>Please log in first.</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+<div id="userListPopup" style="
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center;">
+  
+  <div style="background:white; padding:20px; width:350px; border-radius:10px;">
+    <h3 style="color:#ff8ec7; margin-bottom:10px;">Customer Emails</h3>
+    <ul id="userList" style="list-style:none; padding:0; max-height:250px; overflow-y:auto;"></ul>
+
+    <button onclick="document.getElementById('userListPopup').style.display='none'"
+      style="margin-top:10px; padding:8px 20px; background:#ff8ec7; border:none; color:white; border-radius:5px;">
+      Close
+    </button>
+  </div>
+
+</div>
+<div id="editStatusPopupBg" class="popup-bg" style="display:none;">
+  <div class="popup-box">
+    <h2>Edit Order Status</h2>
+
+    <label>Status:</label>
+    <select id="editStatusSelect">
+      <option value="Pending">Pending</option>
+      <option value="Accepted">Accepted</option>
+      <option value="Declined">Declined</option>
+      
+    </select>
+
+    <div class="popup-btns">
+      <button onclick="saveOrderStatus()">Save</button>
+      <button onclick="closeEditStatus()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="editProductPopupBg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+  <div style="background:white; padding:20px; border-radius:8px; width:300px; text-align:center;">
+    <h3>Edit Product</h3>
+    <label>Price (₱)</label>
+    <input type="number" id="editProductPrice" min="0" style="width:100%; margin-bottom:10px;" />
+    <label>Stock</label>
+    <input type="number" id="editProductStock" min="0" style="width:100%; margin-bottom:15px;" />
+    <div style="display:flex; justify-content:space-between;">
+      <button id="cancelEditProductBtn">Cancel</button>
+      <button id="saveEditProductBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Receipt Popup -->
+<div id="receiptPopupBg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+  <div style="background:#fff; padding:20px; border-radius:8px; width:350px; max-width:90%; position:relative; font-family: Arial, sans-serif;">
+    <h2 style="text-align:center; margin-bottom:15px;">Order Receipt</h2>
+    <div id="receiptContent" style="font-size:14px; line-height:1.5;"></div>
+    <button id="closeReceiptBtn" style="margin-top:15px; display:block; margin-left:auto; margin-right:auto; 
+        background:#5dade2; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">
+      Close
+    </button>
+  
+  </div>
+</div>
+
+
+
+</body>
+</html>

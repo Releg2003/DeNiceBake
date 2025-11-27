@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order | Dé Nice Bakes</title>
+<script src="https://kit.fontawesome.com/77c0b9dc19.js" crossorigin="anonymous"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+body {
+  background: url(f44dd6aa-5cd3-47d8-bff7-2884b14d4009.jpg) no-repeat center center fixed;
+  background-size: cover;
+  color:#333;
+  overflow-x:hidden;
+}
+.Header_section{background:#ff8ec7;color:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
+.main_logo img{height:60px;border-radius:50%}
+.menu_main nav ul{list-style:none;display:flex;gap:25px}
+.menu_main nav ul li a{text-decoration:none;color:#fff;font-weight:600}
+h2.section-title{text-align:center;color:#e033a9;font-size:2rem;margin:40px 0 20px}
+.products{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;padding:20px}
+.product-card{background:#fff;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,.1);padding:15px;width:260px;text-align:center;opacity:0;transform:translateY(15px);transition:transform .3s,opacity .3s}
+.product-card.visible{opacity:1;transform:translateY(0)}
+.product-card img{width:100%;height:200px;object-fit:cover;border-radius:10px;transition:transform .3s}
+.product-card img:hover{transform:scale(1.05)}
+.product-card h4{color:#e033a9;margin-top:10px}
+.cta-button{background:linear-gradient(135deg,#ff8ec7,#ffd1a1);color:#fff;border:none;border-radius:25px;padding:10px 20px;font-weight:600;cursor:pointer;margin:5px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.order-popup{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:999;padding:20px;backdrop-filter:blur(4px)}
+.popup-content{background:#fff;padding:25px;border-radius:20px;width:90%;max-width:520px;text-align:center;position:relative;animation:popupFadeIn .3s ease;max-height:75vh;overflow-y:auto;box-shadow:0 10px 25px rgba(0,0,0,.25)}
+.close-btn{position:absolute;top:10px;right:15px;font-size:26px;cursor:pointer;color:#e033a9}
+#popupImage{width:100%;border-radius:10px;margin-bottom:12px}
+label{display:block;margin-top:10px;text-align:left}
+select,input,textarea{width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #eee;font-size:0.95rem}
+.total-display{margin:15px 0;font-weight:700}
+@keyframes popupFadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+/* Notification */
+.customer-notif {
+  position: fixed;
+  top: 20px;
+  right: -400px;
+  background: #fff;
+  color: #333;
+  border-left: 6px solid #4CAF50;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: right 0.5s ease, opacity 0.3s;
+  z-index: 9999;
+}
+.customer-notif.show {
+  right: 20px;
+}
+.customer-notif i {
+  color: #4CAF50;
+  font-size: 20px;
+}
+#successPopup .popup-content {
+  animation: popupFadeIn 0.3s ease;
+}
+
+#closeConfirm {
+  display: none !important;
+}
+#closeSuccess{
+  display: none !important;
+}
+.order-popup {
+  display: none; /* hide popups by default */
+  pointer-events: none;
+}
+
+.order-popup.active,
+.order-popup[style*="display: flex"] {
+  display: flex !important; /* make sure visible */
+  pointer-events: auto;
+  z-index: 10000; /* keep popups on top */
+}
+
+.category-nav {
+  position: sticky;
+  top: 80px;
+  z-index: 10001; /* Above normal content, below popups */
+}
+
+
+footer {
+  background-color: #c45b48;
+  color: #fff;
+  padding: 25px 5%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 10px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+.footer-item i {
+  color: #ffe1d6;
+  font-size: 1.2em;
+}
+
+.footer-social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.footer-social a {
+  color: #ffe1d6;
+  font-size: 1.4em;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+.footer-bottom p {
+  font-size: 14px;
+  color: #ffeae3;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔔 Notification -->
+<div id="customerNotif" class="customer-notif">
+  <i class="fa-solid fa-bell"></i>
+  <span id="customerNotifMsg"></span>
+</div>
+
+<!-- HEADER -->
+<div class="Header_section">
+        <div class="main_logo">
+  <a href="home.html"><img src="logo.jpg" alt="Logo" /></a>
+</div>
+  <div class="menu_main">
+    <nav>
+      <ul>
+  <li><a href="home.html"><i class="fas fa-home"></i>Home</a></li>
+  <li><a href="order.html" ><i class="fas fa-shopping-cart"></i> Order</a></li>
+  <li><a href="myorders.html" onclick="showMyOrders()"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+  <li><a href="user.html"> <i class="fas fa-user"></i>User</a></li>
+</ul>
+    </nav>
+  </div>
+</div>
+
+<div class="category-nav" id="categoryNav" style="
+  width:100%;
+  background:#ffe0f1;
+  padding:12px 5px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  position:sticky;
+  top:80px;
+  z-index:999;
+"></div>
+
+<h2 class="section-title" id="categoryTitle">Our Available Cakes</h2>
+<div class="products" id="productList"><p style="text-align:center">Loading products...</p></div>
+
+<div id="myOrderSection" style="display:none; padding:20px;">
+  <h2 class="section-title">My Order List</h2>
+  <div id="orderListContainer" 
+       style="display:flex;flex-wrap:wrap;gap:25px;justify-content:center;">
+    <p>Loading your orders...</p>
+  </div>
+  <div style="text-align:center;margin-top:30px;">
+    <button class="cta-button" onclick="showProductList()">⬅ Back to Products</button>
+  </div>
+</div>
+
+<!-- ORDER POPUP -->
+<div class="order-popup" id="orderPopup" aria-hidden="true">
+  <div class="popup-content" role="dialog" aria-modal="true">
+    <span class="close-btn" id="closeOrder">&times;</span>
+    <img id="popupImage" src="" alt="Product image">
+    <h3 id="popupName"></h3>
+    <p id="popupDescription"></p>
+    <p id="popupStock" style="font-weight:bold;color:#e033a9;margin-bottom:10px"></p>
+
+    <form id="checkoutForm">
+      <label for="size">Option:</label>
+      <select id="size" required></select>
+
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" min="1" value="1" required>
+
+      <div id="extraCandlesContainer">
+        <label><input type="checkbox" id="extraCandlesCheck"> Add extra candles (₱5 each)</label>
+      </div>
+      <div id="candlesOptions" style="display:none">
+        <label for="candles">Number of Candles:</label>
+        <input type="number" id="candles" min="0" value="0">
+        <label for="candleType">Candle Type:</label>
+        <select id="candleType"><option value="normal">Normal</option><option value="number">Number</option></select>
+      </div>
+
+      <label for="message">Message on Cake:</label>
+      <textarea id="message" rows="2"></textarea>
+
+      <label for="paymentMode">Payment Mode:</label>
+      <select id="paymentMode" required>
+        <option value="">-- Select Payment Mode --</option>
+        <option value="Cash">Cash</option>
+        <option value="Gcash">Gcash</option>
+      </select>
+
+      <!-- Gcash Image -->
+      <div id="gcashContainer" style="display:none; text-align:center; margin-top:15px;">
+        <img id="gcashImage" src="gcash.jpg" alt="Gcash QR Code" style=" max-width: 300px;
+  width: 100%;
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;">
+        <p style="font-size:0.9rem; color:#e033a9; margin-top:8px;">Scan this QR to pay with Gcash</p>
+      </div>
+
+      <label for="deliveryMode">Delivery Mode:</label>
+      <select id="deliveryMode" required>
+        <option value="">-- Select Delivery Mode --</option>
+        <option value="Pick Up">Pick Up</option>
+      </select>
+
+      <div id="pickupDateContainer" style="display:none;margin-top:10px">
+        <label for="pickupDateTime">Pickup Date & Time:</label>
+        <input type="datetime-local" id="pickupDateTime">
+      </div>
+
+      <div class="total-display" id="totalDisplay">Total: ₱0</div>
+      <button type="submit" class="cta-button">Submit Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="order-popup">
+  <div class="popup-content" style="max-width:400px;text-align:center;">
+    <span class="close-btn" id="closeSuccess">&times;</span>
+    <i class="fa-solid fa-circle-check" style="color:#4CAF50;font-size:48px;margin-bottom:10px;"></i>
+    <h3>Order Placed Successfully!</h3>
+    <p>Thank you for ordering at Dé Nice Bakes 💕</p>
+    <button class="cta-button" id="okSuccess">OK</button>
+  </div>
+</div>
+
+<!-- CONFIRMATION POPUP -->
+<div class="order-popup" id="confirmPopup" aria-hidden="true">
+  <div class="popup-content" style="max-width:400px;text-align:center;">
+    <span class="close-btn" id="closeConfirm">&times;</span>
+    <h3>Are you sure you want to order this item?</h3>
+    <div style="margin-top:20px; display:flex; justify-content:center; gap:20px;">
+      <button class="cta-button" id="confirmYes">Yes</button>
+      <button class="cta-button" id="confirmNo" style="background:#f5f5f5;color:#333;box-shadow:0 4px 10px rgba(0,0,0,.12);">No</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-item"><i class="fas fa-phone-alt"></i><span>+63 912 345 6789</span></div>
+    <div class="footer-item"><i class="fas fa-envelope"></i><span>theenicebakes@gmail.com</span></div>
+    <div class="footer-item"><i class="fas fa-map-marker-alt"></i><span>123 Sweet Street, Pastry Town, PH</span></div>
+    <div class="footer-social">
+      <a href="https://www.tiktok.com/@de_nicebakes" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/de_nicebakesbyeira" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/share/1EEcM1HuGa/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 Dé Nice BAKES. All rights reserved.</p></div>
+</footer>
+
+<script>
+const paymentSelect = document.getElementById("paymentMode");
+const gcashContainer = document.getElementById("gcashContainer");
+
+paymentSelect.addEventListener("change", (e) => {
+  if (e.target.value === "Gcash") gcashContainer.style.display = "block";
+  else gcashContainer.style.display = "none";
+});
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, get, onChildAdded } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+/* Firebase Config */
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "509609676740",
+  appId: "1:509609676740:web:f86e2a53e4b9b8efb2a48b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+let selectedProduct = null;
+let currentUserEmail = null;
+
+const productList = document.getElementById('productList');
+const orderPopup = document.getElementById('orderPopup');
+const descPopup = document.getElementById('descPopup');
+const closeOrder = document.getElementById('closeOrder');
+const closeDesc = document.getElementById('closeDesc');
+const popupName = document.getElementById('popupName');
+const popupImage = document.getElementById('popupImage');
+const popupStock = document.getElementById('popupStock');
+const descName = document.getElementById('descName');
+const descText = document.getElementById('descText');
+const quantityInput = document.getElementById('quantity');
+const sizeSelect = document.getElementById('size');
+const candlesInput = document.getElementById('candles');
+const extraCheck = document.getElementById('extraCandlesCheck');
+const totalDisplay = document.getElementById('totalDisplay');
+
+
+/* Auth Check */
+onAuthStateChanged(auth, (user) => {
+  if (user) currentUserEmail = user.email;
+  else {
+    alert("Please log in to place an order.");
+    window.location.href = "user.html";
+  }
+});
+
+function loadCategories() {
+  const dbRef = ref(db, 'products');
+  onValue(dbRef, snapshot => {
+    const categoryNav = document.getElementById('categoryNav');
+    
+    // Remove old dynamic category buttons first
+    document.querySelectorAll('.category-button').forEach(btn => btn.remove());
+
+    if (!snapshot.exists()) return;
+
+    const products = snapshot.val();
+    const categories = new Set();
+    for (const id in products) {
+      if (products[id].category) categories.add(products[id].category);
+    }
+
+    // Add buttons dynamically
+    Array.from(categories).forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'cta-button category-button';
+      btn.textContent = cat;
+      btn.addEventListener('click', () => filterCategory(cat));
+      categoryNav.insertBefore(btn, categoryNav.firstChild); // add before custom/myorder
+    });
+  });
+}
+
+// Call after products load
+loadCategories();
+
+// Prevent selecting past dates
+function setMinPickupDate() {
+    const now = new Date();
+
+    // Format to YYYY-MM-DDTHH:MM for datetime-local input
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+
+    const minDate = `${year}-${month}-${day}T${hour}:${minute}`;
+
+    document.getElementById("pickupDateTime").setAttribute("min", minDate);
+}
+
+// Call on page load
+setMinPickupDate();
+
+
+// Show My Orders section
+function showMyOrders() {
+  // Hide products and category nav
+  document.getElementById("productList").style.display = "none";
+  document.getElementById("categoryNav").style.display = "none";
+  document.getElementById("categoryTitle").style.display = "none";
+    document.getElementById("myOrderSection").style.display = "block";
+  loadMyOrders(); // Make sure you already have this function
+  // Show My Orders section
+  document.getElementById("myOrderSection").style.display = "block";
+
+  loadMyOrders(); // load orders from Firebase
+}
+
+// Show Products again
+function showProductList() {
+  document.getElementById("myOrderSection").style.display = "none";
+  document.getElementById("productList").style.display = "flex";
+  document.getElementById("categoryNav").style.display = "flex";
+  document.getElementById("categoryTitle").style.display = "block";
+}
+function calculateOrderTotal(order) {
+  let extra = 0;
+
+  // CAKES
+  if (order.category === "Cakes") {
+    if (order.size === "8-inch") extra = 100;
+    else if (order.size === "10-inch") extra = 200;
+  }
+
+  // CUPCAKES / COOKIES
+  if (order.category === "Cupcakes" || order.category === "Cookies") {
+    if (order.size.includes("12")) extra = 100;
+    else if (order.size.includes("24")) extra = 200;
+  }
+
+  // DRINKS
+  if (order.category === "Drinks") {
+    if (order.size.includes("16")) extra = 30;
+    else if (order.size.includes("22")) extra = 40;
+  }
+
+  const base = Number(order.total) || 0;
+  const qty = Number(order.quantity) || 1;
+  const candles = Number(order.candles) || 0;
+
+  return (base + extra) * qty + candles * 5;
+}
+
+// Load user's orders from Firebase
+async function loadMyOrders() {
+  const orderListContainer = document.getElementById("orderListContainer");
+  orderListContainer.innerHTML = "<p>Loading your orders...</p>";
+
+  const ordersRef = ref(db, "orders");
+
+  onValue(ordersRef, (snapshot) => {
+    orderListContainer.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      orderListContainer.innerHTML = "<p>You have no orders yet.</p>";
+      return;
+    }
+
+    const orders = snapshot.val();
+
+    // Filter orders for the current user
+    const myOrders = Object.entries(orders).filter(([id, o]) => o.email === currentUserEmail);
+
+    if (myOrders.length === 0) {
+      orderListContainer.innerHTML = "<p>You have no orders yet.</p>";
+      return;
+    }
+
+    // Sort orders: Pending → Accepted → Declined → Completed
+    const orderRank = { "Pending": 1, "Accepted": 2, "Declined": 3, "Completed": 4 };
+    const sortedOrders = myOrders.sort((a, b) => orderRank[a[1].status] - orderRank[b[1].status]);
+
+    // Display orders
+   sortedOrders.forEach(([id, o]) => {
+  const card = document.createElement("div");
+  card.className = "product-card";
+  card.style.width = "320px";
+  card.style.textAlign = "left";
+
+  const statusColor = o.status === "Pending" ? "#ffa726" :
+                      o.status === "Accepted" ? "#66bb6a" :
+                      o.status === "Declined" ? "#ef5350" : "#795548";
+
+  card.innerHTML = `
+    <img src="${o.productImage || 'no-image.jpg'}" style="height:200px;object-fit:cover">
+    <h4 style="margin-top:10px">${o.productName}</h4>
+    <p><strong>Status:</strong> <span style="color:${statusColor}">${o.status}</span></p>
+    <p><strong>Size:</strong> ${o.size}</p>
+    <p><strong>Quantity:</strong> ${o.quantity}</p>
+    <p><strong>Candles:</strong> ${o.candles}</p>
+    <p><strong>Message:</strong> ${o.message || "None"}</p>
+    <p><strong>Payment:</strong> ${o.paymentMode}</p>
+    <p><strong>Delivery:</strong> ${o.deliveryMode}</p>
+    <p><strong>Pickup Date:</strong> ${o.pickupDate || "Not set"}</p>
+ <p><strong>Total:</strong> ₱${calculateOrderTotal(o)}</p>
+
+    <p><strong>Date Ordered:</strong> ${o.date?.split("T")[0]}</p>
+    ${
+      o.status === "Pending" 
+      ? `<button class="cta-button" style="background:#e91e63;margin-top:10px"
+          onclick="cancelOrder('${id}')">Cancel Order</button>` 
+      : ""
+    }
+  `;
+  orderListContainer.appendChild(card);
+});
+
+  });
+}
+
+// Example cancelOrder function
+async function cancelOrder(orderId) {
+  if (!confirm("Are you sure you want to cancel this order?")) return;
+  const orderRef = ref(db, `orders/${orderId}`);
+  await set(orderRef, null); // remove order
+  showCustomerNotification("Your order was cancelled.");
+}
+
+
+
+
+/* Load Products */
+/* Load Products */
+function loadProducts() {
+  const dbRef = ref(db, 'products');
+  onValue(dbRef, snapshot => {
+    productList.innerHTML = '';
+    if (!snapshot.exists()) {
+      productList.innerHTML = '<p style="text-align:center">No products available yet.</p>';
+      return;
+    }
+
+    const products = snapshot.val();
+    generateCategories(products); // dynamically generate category buttons
+    for (const id in products) {
+      const p = products[id];
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.setAttribute('data-category', p.category || ''); // <-- ADD THIS
+
+      const img = document.createElement('img');
+      img.src = p.imageURL || '';
+      img.alt = p.name || 'product image';
+
+      const h4 = document.createElement('h4');
+      h4.textContent = p.name || '';
+
+      const price = document.createElement('p');
+      price.textContent = `₱${p.price ?? '0'}`;
+
+      const descBtn = document.createElement('button');
+      descBtn.className = 'cta-button';
+      descBtn.type = 'button';
+      descBtn.textContent = 'Full Description';
+      descBtn.addEventListener('click', () => showDescription(id, p));
+
+      const orderBtn = document.createElement('button');
+      orderBtn.className = 'cta-button';
+      orderBtn.type = 'button';
+      orderBtn.textContent = 'Order Now';
+
+      const stockRef = ref(db, `products/${id}/stock`);
+      onValue(stockRef, async snap => {
+        const baseStock = snap.exists() ? snap.val() : 0;
+        const ordersSnap = await get(ref(db, 'orders'));
+        let pendingQty = 0;
+        if (ordersSnap.exists()) {
+          const orders = ordersSnap.val();
+          for (const oid in orders) {
+            const o = orders[oid];
+            if (o.productId === id && o.status === 'Pending') {
+              pendingQty += o.quantity;
+            }
+          }
+        }
+
+        const availableStock = baseStock - pendingQty;
+        if (availableStock <= 0) {
+          orderBtn.textContent = "Out of Stock";
+          orderBtn.disabled = true;
+          orderBtn.style.cursor = 'not-allowed';
+          orderBtn.style.opacity = 0.6;
+        } else {
+          orderBtn.textContent = "Order Now";
+          orderBtn.disabled = false;
+          orderBtn.style.cursor = 'pointer';
+          orderBtn.style.opacity = 1;
+        }
+      });
+
+      orderBtn.addEventListener('click', () => openPopup(id, p));
+
+      card.append(img, h4, price, descBtn, orderBtn);
+      productList.appendChild(card);
+      setTimeout(() => card.classList.add('visible'), 50);
+    }
+  });
+}
+
+// ✅ MOVE loadCategories() TO AFTER loadProducts()
+loadProducts();
+
+
+
+function openPopup(id, product) {
+  selectedProduct = { id, ...product };
+
+  /** DYNAMIC SIZE / BOXES / OZ **/
+  const size = document.getElementById("size");
+  size.innerHTML = "";
+
+  if (product.category === "Cakes") {
+      size.innerHTML = `
+          <option value="">-- Select Cake Size --</option>
+          <option value="6-inch">6-inch</option>
+          <option value="8-inch">8-inch (+₱100.00)</option>
+          <option value="10-inch">10-inch (+₱200.00)</option>
+      `;
+  }
+  else if (product.category === "Cupcakes" || product.category === "Cookies") {
+      size.innerHTML = `
+          <option value="">-- Select Box Size --</option>
+          <option value="6 pcs">6 pcs</option>
+          <option value="12 pcs">12 (+₱100.00)</pcs</option>
+          <option value="24 pcs">24 (+₱200.00)pcs</option>
+      `;
+  }
+  else if (product.category === "Drinks") {
+      size.innerHTML = `
+          <option value="">-- Select Size (oz) --</option>
+          <option value="12 oz">12 oz</option>
+          <option value="16 oz">16 (+₱30.00)oz</option>
+          <option value="22 oz">22 (+₱40.00)oz</option>
+      `;
+  }
+
+  popupName.textContent = product.name || '';
+  popupImage.src = product.imageURL || '';
+
+
+
+  // Reset checkbox and input
+const candleContainer = document.getElementById("extraCandlesContainer");
+const candleCheck = document.getElementById("extraCandlesCheck");
+const candleBox = document.getElementById("candlesOptions");
+const messageLabel = document.querySelector('label[for="message"]');
+const messageTextarea = document.getElementById('message');
+
+candleCheck.checked = false;
+candleBox.style.display = "none";
+
+if (product.category === "Cakes") {
+    messageLabel.style.display = "block";
+    messageTextarea.style.display = "block";
+} else {
+    messageLabel.style.display = "none";
+    messageTextarea.style.display = "none";
+}
+if (product.category === "Cakes") {
+    candleContainer.style.display = "block"; // show entire label
+    candleCheck.disabled = false;
+    candleCheck.addEventListener("change", () => {
+        candleBox.style.display = candleCheck.checked ? "block" : "none";
+    });
+} else {
+    candleContainer.style.display = "none"; // hide entire label
+    candleCheck.disabled = true;
+    candleBox.style.display = "none";
+}
+
+
+  /* Stock display */
+  const stockRef = ref(db, `products/${id}/stock`);
+  onValue(stockRef, async snap => {
+    const baseStock = snap.exists() ? snap.val() : 0;
+    const ordersSnap = await get(ref(db, 'orders'));
+    let pendingQty = 0;
+    if (ordersSnap.exists()) {
+      const orders = ordersSnap.val();
+      for (const oid in orders) {
+        const o = orders[oid];
+        if (o.productId === id && o.status === 'Pending') {
+          pendingQty += o.quantity;
+        }
+      }
+    }
+    const availableStock = baseStock - pendingQty;
+    popupStock.textContent = `Remaining Stocks: ${availableStock >= 0 ? availableStock : 0}`;
+  });
+
+  orderPopup.style.display = 'flex';
+  resetForm();
+}
+
+
+
+
+function showDescription(id, product) {
+  descName.textContent = product.name || '';
+  descText.textContent = product.description || '';
+  descPopup.style.display = 'flex';
+}
+
+closeOrder.addEventListener('click', () => orderPopup.style.display = 'none');
+closeDesc.addEventListener('click', () => descPopup.style.display = 'none');
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    orderPopup.style.display = 'none';
+    descPopup.style.display = 'none';
+  }
+});
+
+function resetForm() {
+  quantityInput.value = 1;
+  sizeSelect.value = '';
+  document.getElementById('message').value = '';
+  candlesInput.value = 0;
+  extraCheck.checked = false;
+  document.getElementById('candlesOptions').style.display = 'none';
+  updateTotal();
+}
+
+function updateTotal() {
+  if (!selectedProduct) return;
+
+  const qty = Number(quantityInput.value) || 0;
+  const candles = extraCheck.checked ? Number(candlesInput.value) || 0 : 0;
+
+  let extra = 0;
+
+  // CAKE EXTRA PRICE
+  if (selectedProduct.category === "Cakes") {
+      if (sizeSelect.value === "8-inch") extra = 100;
+      else if (sizeSelect.value === "10-inch") extra = 200;
+  }
+
+  // CUPCAKES / COOKIES EXTRA PRICE
+  if (selectedProduct.category === "Cupcakes") {
+      if (sizeSelect.value.includes("12")) extra = 100;
+      else if (sizeSelect.value.includes("24")) extra = 200;
+  }
+  if (selectedProduct.category === "Cookies") {
+      if (sizeSelect.value.includes("12")) extra = 100;
+      else if (sizeSelect.value.includes("24")) extra = 200;
+  }
+
+  // DRINKS EXTRA PRICE
+  if (selectedProduct.category === "Drinks") {
+      if (sizeSelect.value.includes("16")) extra = 30;
+      else if (sizeSelect.value.includes("22")) extra = 40;
+  }
+
+  const basePrice = Number(selectedProduct.price) || 0;
+  const total = (basePrice + extra) * qty + candles * 5;
+
+  totalDisplay.textContent = `Total: ₱${total}`;
+}
+
+
+
+
+[quantityInput, candlesInput, sizeSelect, extraCheck].forEach(el => el.addEventListener('input', updateTotal));
+extraCheck.addEventListener('change', () => {
+  document.getElementById('candlesOptions').style.display = extraCheck.checked ? 'block' : 'none';
+  updateTotal();
+});
+
+document.getElementById('deliveryMode').addEventListener('change', (e) => {
+  document.getElementById('pickupDateContainer').style.display = e.target.value === 'Pick Up' ? 'block' : 'none';
+});
+
+function showStockError(message) {
+  document.getElementById("stockErrorMsg").textContent = message;
+  document.getElementById("stockErrorPopup").style.display = "flex";
+}
+document.getElementById("okStockError").addEventListener("click", () => {
+  document.getElementById("stockErrorPopup").style.display = "none";
+});
+
+function filterCategory(selected) {
+  const cards = document.querySelectorAll(".product-card");
+  const categoryTitle = document.getElementById("categoryTitle");
+
+  categoryTitle.textContent = "Our Available " + selected;
+
+  cards.forEach(card => {
+    if (card.getAttribute("data-category") === selected) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
+
+
+function generateCategories(products) {
+  const nav = document.getElementById('categoryNav');
+  nav.innerHTML = ""; // clear old content
+
+  const categories = new Set();
+
+  // Gather all categories from Firebase
+  for (const id in products) {
+    if (products[id].category) {
+      categories.add(products[id].category);
+    }
+  }
+
+  // ⭐ DEFAULT "ALL" BUTTON ⭐
+ const allBtn = document.createElement('button');
+allBtn.className = 'cta-button category-button';
+allBtn.textContent = "All";
+allBtn.onclick = () => showAllProducts();
+
+// ⭐ Instead of appendChild(), insert BEFORE the first category button
+nav.insertBefore(allBtn, nav.firstChild);
+
+
+  // Create category buttons (Cupcakes, Cookies, etc.)
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cta-button category-button';
+    btn.textContent = cat;
+    btn.onclick = () => filterCategory(cat);
+    nav.appendChild(btn);
+  });
+
+  // Customize button
+  const customizeBtn = document.createElement('button');
+  customizeBtn.className = 'cta-button';
+  customizeBtn.style.background = "#ff5fbf";
+  customizeBtn.textContent = "🎨 Customize";
+  customizeBtn.onclick = () => location.href = 'custom.html';
+  nav.appendChild(customizeBtn);
+showAllProducts(); // Auto-select "All" on page load
+
+ }
+
+
+
+
+function showAllProducts() {
+  const cards = document.querySelectorAll(".product-card");
+  const title = document.getElementById("categoryTitle");
+
+  title.textContent = "All Available Products";
+
+  cards.forEach(card => {
+    card.style.display = "block";
+  });
+}
+
+
+
+/* CONFIRMATION POPUP LOGIC */
+const confirmPopup = document.getElementById('confirmPopup');
+const closeConfirm = document.getElementById('closeConfirm');
+const confirmYes = document.getElementById('confirmYes');
+const confirmNo = document.getElementById('confirmNo');
+
+let pendingOrderEvent = null;
+
+// Intercept form submit
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  pendingOrderEvent = e;
+  confirmPopup.style.display = 'flex';
+});
+
+// Close confirmation popup
+closeConfirm.addEventListener('click', () => { confirmPopup.style.display = 'none'; });
+confirmNo.addEventListener('click', () => { confirmPopup.style.display = 'none'; });
+
+// If user clicks Yes, proceed with the order submission
+confirmYes.addEventListener('click', async () => {
+    confirmPopup.style.display = 'none';
+
+    if (!selectedProduct) return alert("No product selected.");
+
+    const qty = Number(quantityInput.value);
+    const size = sizeSelect.value;
+    const candles = extraCheck.checked ? Number(candlesInput.value) : 0;
+    const message = document.getElementById("message").value;
+    const paymentMode = document.getElementById("paymentMode").value;
+    const deliveryMode = document.getElementById("deliveryMode").value;
+    const pickupDate = document.getElementById("pickupDateTime").value || "";
+    let extra = 0;
+
+// CAKES
+if (selectedProduct.category === "Cakes") {
+    if (size === "8-inch") extra = 100;
+    else if (size === "10-inch") extra = 200;
+}
+
+// CUPCAKES
+if (selectedProduct.category === "Cupcakes") {
+    if (size.includes("12")) extra = 100;
+    else if (size.includes("24")) extra = 200;
+}
+
+// COOKIES
+if (selectedProduct.category === "Cookies") {
+    if (size.includes("12")) extra = 100;
+    else if (size.includes("24")) extra = 200;
+}
+
+// DRINKS
+if (selectedProduct.category === "Drinks") {
+    if (size.includes("16")) extra = 30;
+    else if (size.includes("22")) extra = 40;
+}
+
+    const total = (Number(selectedProduct.price) + extra) * qty + candles * 5;
+
+    // CHECK STOCK
+    const stockSnap = await get(ref(db, `products/${selectedProduct.id}/stock`));
+    const baseStock = stockSnap.exists() ? stockSnap.val() : 0;
+
+    const ordersSnap = await get(ref(db, "orders"));
+    let pendingQty = 0;
+
+    if (ordersSnap.exists()) {
+        const orders = ordersSnap.val();
+        for (const oid in orders) {
+            const o = orders[oid];
+            if (o.productId === selectedProduct.id && o.status === "Pending") {
+                pendingQty += Number(o.quantity);
+            }
+        }
+    }
+
+    const availableStock = baseStock - pendingQty;
+    if (qty > availableStock) {
+        showStockError("Not enough stock available.");
+        return;
+    }
+
+    // SAVE ORDER TO FIREBASE
+    const newOrderRef = push(ref(db, "orders"));
+    await set(newOrderRef, {
+        email: currentUserEmail,
+        productId: selectedProduct.id,
+        productName: selectedProduct.name,
+        productImage: selectedProduct.imageURL || "",
+        size: size,
+        quantity: qty,
+        candles: candles,
+        message: message,
+        paymentMode: paymentMode,
+        deliveryMode: deliveryMode,
+        pickupDate: pickupDate,
+        total: total,
+        date: new Date().toISOString(),
+        status: "Pending"
+    });
+
+    // CLOSE POPUP + SHOW SUCCESS
+    orderPopup.style.display = "none";
+    document.getElementById("successPopup").style.display = "flex";
+});
+
+
+/* Success Popup Close */
+const successPopup = document.getElementById('successPopup');
+document.getElementById('closeSuccess').addEventListener('click', () => {
+  successPopup.style.display = 'none';
+});
+document.getElementById('okSuccess').addEventListener('click', () => {
+  successPopup.style.display = 'none';
+});
+
+/* Customer Notifications */
+let customerEmail = "";
+onAuthStateChanged(auth, (user) => {
+  if (user) customerEmail = user.email;
+});
+
+function showCustomerNotification(message) {
+  const notif = document.getElementById("customerNotif");
+  const msg = document.getElementById("customerNotifMsg");
+  msg.textContent = message;
+  notif.classList.add("show");
+  setTimeout(() => {
+    notif.classList.remove("show");
+  }, 5000);
+}
+
+const ordersRef = ref(db, "orders");
+
+// ✅ Show notification when a new order is created by this user (Pending)
+onChildAdded(ordersRef, (snapshot) => {
+  const order = snapshot.val();
+  if (order.email === customerEmail && order.status === "Pending") {
+    showCustomerNotification(`🧁 Your order "${order.productName || 'a product'}" status: Pending`);
+  }
+});
+
+// ✅ Notify only when an existing order's status changes
+let lastStatuses = {};
+onValue(ordersRef, (snap) => {
+  const orders = snap.val() || {};
+  for (const id in orders) {
+    const o = orders[id];
+    if (o.email === customerEmail) {
+      const prevStatus = lastStatuses[id];
+      if (prevStatus && prevStatus !== o.status) {
+        if (o.status === "Accepted" || o.status === "Declined") {
+          showCustomerNotification(`🧁 Your order "${o.productName || 'a product'}" status: ${o.status}`);
+        }
+      } 
+      lastStatuses[id] = o.status;
+    }
+  }
+});
+
+</script>
+</body>
+</html>
+

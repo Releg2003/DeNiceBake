@@ -1,0 +1,51 @@
+type User @table {
+  username: String!
+  email: String!
+  createdAt: Timestamp!
+  displayName: String
+  profilePictureUrl: String
+}
+
+type Friendship @table(key: ["initiator", "recipient"]) {
+  initiator: User!
+  recipient: User!
+  status: String!
+  createdAt: Timestamp!
+  respondedAt: Timestamp
+}
+
+type Event @table {
+  creator: User!
+  title: String!
+  description: String!
+  eventDate: Timestamp!
+  location: String!
+  createdAt: Timestamp!
+  imageUrl: String
+  endTime: Timestamp
+}
+
+type Invitation @table(key: ["event", "invitee"]) {
+  event: Event!
+  invitee: User!
+  status: String!
+  createdAt: Timestamp!
+  respondedAt: Timestamp
+}
+
+type Media @table {
+  event: Event!
+  uploader: User!
+  mediaUrl: String!
+  mediaType: String!
+  createdAt: Timestamp!
+  caption: String
+}
+
+type Comment @table {
+  media: Media!
+  commenter: User!
+  text: String!
+  createdAt: Timestamp!
+  parentCommentId: UUID
+}

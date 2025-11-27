@@ -1,0 +1,332 @@
+/* ---------- GLOBAL STYLES ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: #f9f9fb;
+  color: #333;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- ADMIN CONTAINER ---------- */
+.admin-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #e033a9, #d91d84);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  min-height: 100vh;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar .logo img {
+  width: 90px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+}
+
+.sidebar .logo h2 {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sidebar nav ul {
+  list-style: none;
+}
+
+.sidebar nav ul li {
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sidebar nav ul li:hover,
+.sidebar nav ul li.active {
+  background: #fff;
+  color: #e033a9;
+}
+
+/* ---------- FIX OVERLAY CLICK ISSUE ---------- */
+.sidebar {
+  z-index: 10; /* keep sidebar on top only for its area */
+}
+
+.main-content {
+  position: relative;
+  z-index: 1; /* make sure it's clickable above other layers */
+}
+
+
+
+/* ---------- MAIN CONTENT ---------- */
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+h2, h3 {
+  color: #e033a9;
+  margin-bottom: 10px;
+}
+
+/* ---------- DASHBOARD OVERVIEW ---------- */
+/* Center dashboard cards horizontally and vertically */
+.dashboard-section[data-section="overview"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal center */
+  justify-content: center; /* vertical alignment within section */
+  min-height: 300px; /* adjust height as needed */
+}
+
+.dashboard-overview {
+  display: flex;
+  gap: 40px; /* spacing between cards */
+  justify-content: center; /* horizontal center */
+  flex-wrap: wrap; /* wrap cards if screen is small */
+}
+
+.dashboard-overview .card {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  min-width: 180px;
+}
+
+
+/* ---------- SALES GRAPH ---------- */
+.sales-graph {
+  background: #fff2cc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.sales-graph canvas {
+  width: 100%;
+  max-height: 300px;
+}
+
+/* ---------- PRODUCT MANAGEMENT ---------- */
+.product-management {
+  background: #fff2cc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.product-management form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.product-management input[type="text"],
+.product-management input[type="number"],
+.product-management input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.product-management button {
+  background: #e033a9;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.product-management button:hover {
+  background: #c9248b;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background: #f5f5f5;
+  color: #555;
+}
+
+td img {
+  border-radius: 6px;
+}
+
+/* ---------- ORDERS SECTION ---------- */
+.orders {
+  background: #fff2cc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.orders table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders th, .orders td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.orders th {
+  background: #f5f5f5;
+  color: #555;
+}
+
+/* ---------- LOGS SECTION ---------- */
+.logs {
+  background: #fff2cc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logs ul {
+  list-style: none;
+}
+
+.logs li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ---------- SCROLLBAR ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #e033a9;
+  border-radius: 5px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    transition: 0.3s;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .dashboard-overview {
+    flex-direction: column;
+  }
+}
+.status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-transform: capitalize;
+  display: inline-block;
+  margin-right: 6px;
+}
+.status.pending {
+  background-color: #ffcc00;
+  color: #333;
+}
+.status.approved {
+  background-color: #4CAF50;
+  color: white;
+}
+.status.declined {
+  background-color: #d9534f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+#ordersTable button {
+  margin-left: 5px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#ordersTable button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+#ordersTable button:nth-child(2) {
+  background-color: #dc3545;
+  color: white;
+}
+
+.product-management button {
+  pointer-events: auto;
+  opacity: 1;
+}
+.remove-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.remove-btn:hover {
+  background: #c0392b;
+}

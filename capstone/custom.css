@@ -1,0 +1,5 @@
+body { margin:0; display:flex; font-family: Arial; }
+#ui { width:300px; padding:20px; background:#ffd1a1; height:100vh; overflow-y:auto; }
+#preview { flex:1; height:100vh; }
+label { margin-top:10px; display:block; font-weight:bold; }
+input, select { width:100%; padding:5px; margin-top:5px; }

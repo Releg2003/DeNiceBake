@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Cake Order | Dé Nice BAKES</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== HEADER ===== */
+.Header_section {
+  background-color: #ff8ec7;
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container_fluid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.main_logo img {
+  height: 60px;
+  width: auto;
+  border-radius: 50%;
+}
+
+.menu_main nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu_main nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.menu_main ul li a i {
+  margin-right: 6px;
+  color: #ccc9cb;
+}
+
+.menu_main ul li a:hover,
+.menu_main ul li a:hover i {
+  color: #75a926;
+}
+
+.burger {
+  display: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+  order: 2;
+}
+
+.menu_main {
+  order: 1;
+}
+
+@media (max-width: 768px) {
+  .menu_main {
+    display: none;
+    width: 100%;
+    background-color: #ff8ec7;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .menu_main.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .menu_main nav ul {
+    flex-direction: column;
+  }
+
+  .menu_main nav ul li {
+    margin: 10px 0;
+  }
+
+  .burger {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== GLOBAL & FORM STYLES ====== */
+body {
+  background: url('f44dd6aa-5cd3-47d8-bff7-2884b14d4009.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  color:#333;
+  overflow-x:hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  font-weight: bold;
+}
+
+select, input, button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+  justify-content: center;
+}
+
+.options img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.options img.selected {
+  border-color: #f06292;
+  transform: scale(1.05);
+}
+
+.selectedName {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+#totalPrice {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#gcashQRCode img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+button {
+  background-color: #f06292;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #e91e63;
+}
+
+/* Notification popup */
+#orderNotif {
+  position: fixed;
+  top: 20px;
+  right: -400px;
+  background: #f06292;
+  color: #fff;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-weight: bold;
+  z-index: 10000;
+  transition: right 0.5s ease;
+}
+
+/* ====== FOOTER ====== */
+footer {
+  background-color: #c45b48;
+  color: #fff;
+  padding: 25px 5%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 10px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+.footer-item i {
+  color: #ffe1d6;
+  font-size: 1.2em;
+}
+
+.footer-social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.footer-social a {
+  color: #ffe1d6;
+  font-size: 1.4em;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+.footer-bottom p {
+  font-size: 14px;
+  color: #ffeae3;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="Header_section">
+  <div class="container_fluid">
+    <div class="main_logo">
+      <a href="home.html"><img src="logo.jpg" alt="Dé Nice BAKES Logo" /></a>
+    </div>
+    <div class="menu_main">
+      <nav>
+        <ul>
+          <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li id="orderMenu" style="display:none;"><a href="order.html"><i class="fas fa-shopping-cart"></i> Order</a></li>
+                    <li><a href="myorders.html" onclick="showMyOrders()"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+                   <li id="userMenu" style="display:none;"><a href="user.html"> <i class="fas fa-user"></i>User</span></a></li>
+          <li><a href="user.html">User</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="burger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+  </div>
+</div>
+
+<!-- ===== CUSTOM CAKE FORM ===== -->
+<div class="container">
+
+  <!-- Shape -->
+  <label>Choose Cake Shape:</label>
+  <div class="options" id="shapeOptions">
+    <img src="1.png" data-name="Round">
+    <img src="2.png" data-name="Heart">
+    <img src="3.png" data-name="Square">
+  </div>
+  <div class="selectedName" id="selectedShapeName">Selected Shape: Round</div>
+
+  <!-- Frosting -->
+  <label>Choose Frosting:</label>
+  <div class="options" id="frostingOptions">
+    <img src="buttercream.jpg" data-name="Buttercream">
+    <img src="fondant.jpg" data-name="Fondant">
+    <img src="whipped cream.jpg" data-name="Whipped Cream">
+  </div>
+  <div class="selectedName" id="selectedFrostingName">Selected Frosting: Buttercream</div>
+
+  <!-- Topping -->
+  <label>Choose Topping:</label>
+  <div class="options" id="toppingOptions">
+    <img src="choco chip.jpg" data-name="Chocolate Chips">
+    <img src="cherries.png" data-name="Cherries">
+    <img src="sprinkles.png" data-name="Sprinkles">
+  </div>
+  <div class="selectedName" id="selectedToppingName">Selected Topping: Sprinkles</div>
+
+  <!-- Flavor, Size, Layers, Quantity, Pickup, Message, Payment -->
+  <label>Choose Flavor:</label>
+  <select id="flavor">
+    <option value="">--Select Flavor--</option>
+    <option value="Chocolate">Chocolate</option>
+    <option value="Vanilla">Vanilla</option>
+    <option value="Coffee">Coffee</option>
+  </select>
+
+  <label>Choose Size:</label>
+  <select id="size">
+    <option value="Small">Small</option>
+    <option value="Medium">Medium</option>
+    <option value="Large">Large</option>
+  </select>
+
+  <label>Number of Layers:</label>
+  <select id="layers">
+    <option value="1">1 Layer</option>
+    <option value="2">2 Layers</option>
+    <option value="3">3 Layers</option>
+  </select>
+
+  <label>Quantity:</label>
+  <input type="number" id="quantity" min="1" value="1">
+
+  <label>Pickup Date & Time:</label>
+  <input type="datetime-local" id="pickupDate" required>
+
+  <div id="totalPrice">Total Price: ₱0</div>
+
+  <form id="cakeForm">
+    <label><input type="checkbox" id="addCandle"> Add Candles</label>
+    <div id="candleSection" style="display:none;">
+      <label>Select Candle Type:</label>
+      <select id="candleType">
+        <option value="">--Select Candle Type--</option>
+        <option value="normal">Normal Candle</option>
+        <option value="number">Number Candle</option>
+      </select>
+      <div id="numberCandleSection" style="display:none;">
+        <label>Choose Candle Number:</label>
+        <select id="numberCandle">
+          <option value="">--Select Number--</option>
+          <option value="0">0</option><option value="1">1</option>
+          <option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option>
+          <option value="6">6</option><option value="7">7</option>
+          <option value="8">8</option><option value="9">9</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Custom Message:</label>
+    <input type="text" id="cakeMessage" placeholder="Happy Birthday!">
+
+    <label>Payment Method:</label>
+    <select id="payment" required>
+      <option value="">--Select Payment--</option>
+      <option value="cash">Cash</option>
+      <option value="gcash">GCash</option>
+    </select>
+
+    <div id="gcashQRCode" style="display:none; text-align:center;">
+      <img src="gcash.jpg">
+      <p style="font-size:0.9rem; color:#e033a9; margin-top:8px;">Scan this QR to pay with Gcash</p>
+    </div>
+
+    <label>Delivery Mode:</label>
+    <select id="delivery" required>
+      <option value="">--Select Delivery--</option>
+      <option value="pickup">Pickup</option>
+      <option value="delivery">Delivery</option>
+    </select>
+
+    <button type="submit">Place Order</button>
+  </form>
+</div>
+
+<!-- Notification Popup -->
+<div id="orderNotif">Order placed successfully!</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-item"><i class="fas fa-phone-alt"></i><span>+63 912 345 6789</span></div>
+    <div class="footer-item"><i class="fas fa-envelope"></i><span>theenicebakes@gmail.com</span></div>
+    <div class="footer-item"><i class="fas fa-map-marker-alt"></i><span>123 Sweet Street, Pastry Town, PH</span></div>
+    <div class="footer-social">
+      <a href="https://www.tiktok.com/@de_nicebakes" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/de_nicebakesbyeira" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/share/1EEcM1HuGa/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 Dé Nice BAKES. All rights reserved.</p></div>
+</footer>
+
+<script>
+// Burger menu toggle
+function toggleMenu() {
+  document.querySelector(".menu_main").classList.toggle("active");
+}
+
+// Minimum pickup date
+document.getElementById("pickupDate").min = new Date().toISOString().slice(0,16);
+
+// Default selections
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelector("#shapeOptions img[data-name='Round']").classList.add("selected");
+  document.querySelector("#frostingOptions img[data-name='Buttercream']").classList.add("selected");
+  document.querySelector("#toppingOptions img[data-name='Sprinkles']").classList.add("selected");
+  document.getElementById("selectedShapeName").textContent = "Selected Shape: Round";
+  document.getElementById("selectedFrostingName").textContent = "Selected Frosting: Buttercream";
+  document.getElementById("selectedToppingName").textContent = "Selected Topping: Sprinkles";
+});
+
+// Image selection
+function selectOption(containerId, type, displayBox) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll("img").forEach(img => {
+    img.addEventListener("click", () => {
+      container.querySelectorAll("img").forEach(i => i.classList.remove("selected"));
+      img.classList.add("selected");
+      displayBox.textContent = `Selected ${type}: ${img.dataset.name}`;
+      calculatePrice();
+    });
+  });
+}
+selectOption("shapeOptions","Shape",document.getElementById("selectedShapeName"));
+selectOption("frostingOptions","Frosting",document.getElementById("selectedFrostingName"));
+selectOption("toppingOptions","Topping",document.getElementById("selectedToppingName"));
+
+// Price calculation
+function calculatePrice(){
+  let price=500;
+  const size=document.getElementById("size").value;
+  const layers=Number(document.getElementById("layers").value);
+  const addCandle=document.getElementById("addCandle").checked;
+  const candleType=document.getElementById("candleType").value;
+  const quantity=Number(document.getElementById("quantity").value)||1;
+  if(size==="Medium") price+=150;
+  if(size==="Large") price+=300;
+  price+=(layers-1)*100;
+  if(addCandle) price+=(candleType==="number")?50:20;
+  price*=quantity;
+  document.getElementById("totalPrice").textContent=`Total Price: ₱${price}`;
+  return price;
+}
+["size","layers","addCandle","candleType","quantity"].forEach(id=>{
+  document.getElementById(id).addEventListener("change",calculatePrice);
+});
+document.getElementById("payment").addEventListener("change", function(){
+  document.getElementById("gcashQRCode").style.display=this.value==="gcash"?"block":"none";
+});
+
+// Candle toggle
+const addCandleCheckbox = document.getElementById("addCandle");
+const candleSection = document.getElementById("candleSection");
+const numberCandleSection = document.getElementById("numberCandleSection");
+addCandleCheckbox.addEventListener("change", ()=>{
+  candleSection.style.display=addCandleCheckbox.checked?"block":"none";
+  numberCandleSection.style.display="none";
+  calculatePrice();
+});
+document.getElementById("candleType").addEventListener("change", ()=>{
+  numberCandleSection.style.display=(document.getElementById("candleType").value==="number")?"block":"none";
+  calculatePrice();
+});
+
+// Popup notification
+function showOrderNotification(message){
+  const notif=document.getElementById("orderNotif");
+  notif.textContent=message;
+  notif.style.right="20px";
+  setTimeout(()=>{ notif.style.right="-400px"; },4000);
+}
+</script>
+
+<script type="module">
+// Firebase configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "509609676740",
+  appId: "1:509609676740:web:f86e2a53e4b9b8efb2a48b"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Place order
+document.getElementById("cakeForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  onAuthStateChanged(auth,(user)=>{
+    if(!user){ alert("Please login first."); window.location.href="user.html"; return; }
+    const shape=document.querySelector("#shapeOptions img.selected")?.dataset.name||"";
+    const frosting=document.querySelector("#frostingOptions img.selected")?.dataset.name||"";
+    const topping=document.querySelector("#toppingOptions img.selected")?.dataset.name||"";
+    const flavor=document.getElementById("flavor").value;
+    const size=document.getElementById("size").value;
+    const layers=document.getElementById("layers").value;
+    const quantity=document.getElementById("quantity").value;
+    const pickupDate=document.getElementById("pickupDate").value;
+    const addCandle=document.getElementById("addCandle").checked;
+    const candleType=document.getElementById("candleType").value;
+    const numberCandle=document.getElementById("numberCandle").value;
+    const message=document.getElementById("cakeMessage").value;
+    const payment=document.getElementById("payment").value;
+    const delivery=document.getElementById("delivery").value;
+    const total=calculatePrice();
+    const orderRef=push(ref(db,"orders"));
+    set(orderRef,{
+      userId:user.uid,email:user.email,productName:"Custom Cake",category:"Custom Cake",
+      baseFlavor:flavor,cakeShape:shape,frosting:frosting,toppings:topping,layers:layers,
+      size:size,quantity:quantity,pickupDate:pickupDate,addCandle:addCandle,candleType:candleType,
+      numberCandle:numberCandle,cakeMessage:message,paymentMode:payment,deliveryMode:delivery,
+      status:"Pending",date:new Date().toISOString(),total:total
+    }).then(()=>{
+      showOrderNotification("Your custom cake order has been placed!");
+      setTimeout(()=>{ window.location.href="myorders.html"; },2000);
+    }).catch(err=>{
+      console.error(err);
+      showOrderNotification("Error placing order.");
+    });
+  });
+});
+</script>
+
+</body>
+</html>

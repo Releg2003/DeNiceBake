@@ -1,0 +1,543 @@
+/* ============================================================
+   GLOBAL RESET & BASE
+============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  background-color: #fff2cc;
+  color: #333;
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+.Header_section {
+  background-color: #ff8ec7;
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container_fluid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.main_logo img {
+  height: 60px;
+  width: auto;
+  border-radius: 50%;
+}
+
+/* Navigation */
+.menu_main nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.menu_main nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.menu_main ul li a i {
+  margin-right: 6px;
+  color: #ccc9cb;
+}
+
+.menu_main ul li a:hover,
+.menu_main ul li a:hover i {
+  color: #75a926;
+}
+
+/* Burger Menu */
+.burger {
+  display: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+  order: 2;
+}
+
+.menu_main {
+  order: 1;
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+  .menu_main {
+    display: none;
+    width: 100%;
+    background-color: #ff8ec7;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .menu_main.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .menu_main nav ul {
+    flex-direction: column;
+  }
+
+  .menu_main nav ul li {
+    margin: 10px 0;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .main_logo img {
+    height: 45px;
+  }
+
+  .container_fluid {
+    flex-direction: column;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   HERO SECTION
+============================================================ */
+.hero {
+  width: 100%;
+  height: 500px;
+  color: #fff;
+  text-align: center;
+  padding: 150px 20px;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  animation: slideShow 12s infinite;
+  position: relative;
+}
+
+@keyframes slideShow {
+  0% { background-image: url("back.jpg"); }
+  33% { background-image: url("cake1.jpg"); }
+  66% { background-image: url("cake2.jpg"); }
+  100% { background-image: url("back.jpg"); }
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hero h1,
+.hero h3,
+.hero p {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.hero h3 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #ffd1e8;
+}
+
+.hero p {
+  font-size: 1.2em;
+  color: #fff5f8;
+}
+
+/* ============================================================
+   SERVICES
+============================================================ */
+.services {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #fff2cc;
+}
+
+.services h2 {
+  font-size: 2em;
+  margin-bottom: 25px;
+  color: #e033a9;
+}
+
+.service-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: #e033a9;
+}
+
+/* ============================================================
+   CAKES & PASTRIES SLIDER
+============================================================ */
+.cakes-pastries {
+  text-align: center;
+  padding: 40px 0;
+  background: #fff7f3;
+}
+
+.cakes-pastries h2 {
+  font-size: 28px;
+  color: #c45b48;
+  margin-bottom: 20px;
+}
+
+.cakes-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.cakes-slider {
+  overflow: hidden;
+  width: 90%;
+}
+
+.slide-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.item-card {
+  min-width: 250px;
+  margin: 0 10px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 15px;
+}
+
+.item-card img {
+  width: 100%;
+  border-radius: 10px;
+  height: 180px;
+  object-fit: cover;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e033a9;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 18px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-btn:hover {
+  background: #c45b48;
+  transform: scale(1.1);
+}
+
+.left-btn { left: 0; }
+.right-btn { right: 0; }
+
+@media (max-width: 768px) {
+  .item-card { min-width: 220px; }
+}
+
+/* ============================================================
+   USER PROFILE
+============================================================ */
+.user-profile {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.user-profile h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #c45b48;
+}
+
+.user-profile h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #da9f5b;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  padding: 10px 16px;
+  background-color: #da9f5b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #c78543;
+}
+
+.order-history li {
+  background: #f0f0f0;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+/* Stars */
+.stars span {
+  font-size: 24px;
+  color: lightgray;
+  cursor: pointer;
+}
+
+.stars span.filled {
+  color: gold;
+}
+
+/* Delete Account */
+.delete-account {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.delete-account button {
+  background-color: #ff4d6d;
+}
+
+.delete-account button:hover {
+  background-color: #d63357;
+}
+
+/* ============================================================
+   POPUPS
+============================================================ */
+.popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  width: 350px;
+  max-width: 90%;
+  text-align: center;
+  position: relative;
+  animation: popupFade 0.3s ease;
+}
+
+@keyframes popupFade {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.popup-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.popup-content button {
+  background-color: #e033a9;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+  background-color: #c42791;
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  text-decoration: underline;
+  color: #555;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  color: #000;
+}
+
+.popup-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Password Toggle */
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 35px;
+}
+
+.password-container i {
+  position: absolute;
+  right: 10px;
+  top: 35%;
+  cursor: pointer;
+  color: #888;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  background-color: #c45b48;
+  color: #fff;
+  padding: 25px 5%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 10px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+.footer-item i {
+  color: #ffe1d6;
+  font-size: 1.2em;
+}
+
+.footer-social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.footer-social a {
+  color: #ffe1d6;
+  font-size: 1.4em;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+.footer-bottom p {
+  font-size: 14px;
+  color: #ffeae3;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}

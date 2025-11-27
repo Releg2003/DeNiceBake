@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Orders | Dé Nice Bakes</title>
+<script src="https://kit.fontawesome.com/77c0b9dc19.js" crossorigin="anonymous"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
+body {
+  background: url(f44dd6aa-5cd3-47d8-bff7-2884b14d4009.jpg) no-repeat center center fixed;
+  background-size: cover;
+  color:#333;
+  overflow-x:hidden;
+}
+.Header_section{
+  background:#ff8ec7;
+  color:#fff;
+  padding:10px 20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+.main_logo img{height:60px;border-radius:50%}
+.menu_main nav ul{list-style:none;display:flex;gap:25px}
+.menu_main nav ul li a{text-decoration:none;color:#fff;font-weight:600}
+.menu_main nav ul li a.active{border-bottom:2px solid #fff;padding-bottom:2px;}
+h2.section-title{text-align:center;color:#e033a9;font-size:2rem;margin:40px 0 20px}
+.filter-container { display:flex; justify-content:center; margin-bottom:25px; }
+.filter-container select {
+  padding:10px 15px;
+  border-radius:50px;
+  border:2px solid #e033a9;
+  background:#fff0f8;
+  color:#e033a9;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+.filter-container select:hover { background: #ffe6f0; border-color: #ff8ec7; }
+.filter-container select:focus { outline:none; border-color:#ff8ec7; box-shadow:0 0 5px rgba(224,51,169,0.5); }
+.orders-container{display:flex;flex-wrap:wrap;gap:25px;justify-content:center;padding:20px}
+.order-card{
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  padding:15px;
+  width:320px;
+  text-align:left;
+  position:relative;
+  transition:0.3s;
+}
+.order-card img{width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:10px;}
+.order-card h4{color:#e033a9;margin-bottom:8px;}
+.order-card p{margin:5px 0;font-size:0.95rem;}
+.order-card button{
+  background:#e91e63;
+  color:#fff;
+  border:none;
+  border-radius:25px;
+  padding:8px 16px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+.order-status{font-weight:700;}
+.status-pending{color:#ffa726;}
+.status-accepted{color:#66bb6a;}
+.status-declined{color:#ef5350;}
+.status-completed{color:#795548;}
+.customer-notif{
+  position:fixed;
+  top:20px;
+  right:-400px;
+  background:#fff;
+  color:#333;
+  border-left:6px solid #4CAF50;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  border-radius:10px;
+  padding:14px 20px;
+  font-size:16px;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  transition:right 0.5s ease, opacity 0.3s;
+  z-index:9999;
+}
+.customer-notif.show{right:20px;}
+.customer-notif i{color:#4CAF50;font-size:20px;}
+#cancelModal {
+  display: none;
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5);
+  z-index:10000;
+  justify-content:center;
+  align-items:center;
+}
+#cancelModal .modal-content {
+  background:#fff;
+  padding:25px;
+  border-radius:15px;
+  max-width:400px;
+  width:90%;
+  text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+#cancelModal .modal-content h3 { margin-bottom:20px; color:#e033a9; }
+#cancelModal .modal-content button {
+  padding:10px 20px;
+  border-radius:25px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  margin:5px;
+  transition:all 0.3s;
+}
+#cancelModal .modal-content .confirm-btn { background:#e91e63; color:#fff; }
+#cancelModal .modal-content .cancel-btn { background:#ccc; color:#333; }
+#cancelModal .modal-content button:hover { opacity:0.9; }
+.empty-msg { width:100%; text-align:center; color:#e033a9; font-weight:600; font-size:1.2rem; margin-top:50px; }
+footer { background-color: #c45b48; color: #fff; padding: 25px 5%; text-align: center; font-size: 15px; }
+.footer-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; margin-bottom: 10px; }
+.footer-item { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 15px; }
+.footer-item i { color: #ffe1d6; font-size: 1.2em; }
+.footer-social { display: flex; gap: 18px; align-items: center; }
+.footer-social a { color: #ffe1d6; font-size: 1.4em; transition: color 0.3s ease, transform 0.2s ease; }
+.footer-social a:hover { color: #ffffff; transform: scale(1.2); }
+.footer-bottom p { font-size: 14px; color: #ffeae3; margin: 0; }
+@media (max-width: 768px) { .footer-container { flex-direction: column; text-align: center; } }
+</style>
+</head>
+<body>
+
+<div id="customerNotif" class="customer-notif">
+  <i class="fa-solid fa-bell"></i>
+  <span id="customerNotifMsg"></span>
+</div>
+
+<div class="Header_section">
+  <div class="main_logo">
+    <a href="home.html"><img src="logo.jpg" alt="Dé Nice Bakes Logo" style="cursor:pointer;"></a>
+  </div>
+  <div class="menu_main">
+    <nav>
+      <ul>
+        <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="order.html"><i class="fas fa-shopping-cart"></i> Order</a></li>
+        <li><a href="myorders.html"><i class="fas fa-clipboard-list"></i> My Orders</a></li>
+        <li><a href="user.html">User</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<h2 class="section-title">My Orders</h2>
+
+<div class="filter-container">
+  <select id="orderFilter">
+    <option value="all">All</option>
+    <option value="today">Today</option>
+    <option value="yesterday">Yesterday</option>
+    <option value="last3">Last 3 Days</option>
+    <option value="last7">Last 7 Days</option>
+    <option value="lastMonth">Last Month</option>
+  </select>
+</div>
+
+<h2 class="section-title">Custom Cake Orders</h2>
+<div class="orders-container" id="customOrdersContainer">
+  <p class="empty-msg">Loading your custom cake orders...</p>
+</div>
+
+<h2 class="section-title">Other Orders</h2>
+<div class="orders-container" id="ordersContainer">
+  <p class="empty-msg">Loading your other orders...</p>
+</div>
+
+<div id="cancelModal">
+  <div class="modal-content">
+    <h3>Cancel this order?</h3>
+    <button class="confirm-btn" id="modalConfirm">Yes, Cancel</button>
+    <button class="cancel-btn" id="modalClose">No</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-item"><i class="fas fa-phone-alt"></i><span>+63 912 345 6789</span></div>
+    <div class="footer-item"><i class="fas fa-envelope"></i><span>theenicebakes@gmail.com</span></div>
+    <div class="footer-item"><i class="fas fa-map-marker-alt"></i><span>123 Sweet Street, Pastry Town, PH</span></div>
+    <div class="footer-social">
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 Dé Nice BAKES. All rights reserved.</p></div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6_ACisV2JCAwi1r30uyemtPBVTjEZavk",
+  authDomain: "denicebakes.firebaseapp.com",
+  databaseURL: "https://denicebakes-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "denicebakes",
+  storageBucket: "denicebakes.appspot.com",
+  messagingSenderId: "509609676740",
+  appId: "1:509609676740:web:f86e2a53e4b9b8efb2a48b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+let currentUserEmail = null;
+let cancelOrderId = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUserEmail = user.email;
+    loadMyOrders();
+  } else {
+    alert("Please log in to see your orders.");
+    window.location.href = "user.html";
+  }
+});
+
+function loadMyOrders() {
+  const ordersRef = ref(db, "orders");
+  const filterSelect = document.getElementById("orderFilter");
+  let snapshotVal = null;
+
+  onValue(ordersRef, (snapshot) => {
+    snapshotVal = snapshot.val() || {};
+    displayOrders(snapshotVal);
+  });
+
+  filterSelect.addEventListener("change", () => displayOrders(snapshotVal));
+
+  function displayOrders(orders) {
+    const customContainer = document.getElementById("customOrdersContainer");
+    const otherContainer = document.getElementById("ordersContainer");
+    customContainer.innerHTML = "";
+    otherContainer.innerHTML = "";
+
+    const allOrders = Object.entries(orders).filter(([id,o]) => o.email === currentUserEmail);
+    if(allOrders.length === 0){
+      customContainer.innerHTML = `<p class="empty-msg">You have no custom cake orders yet.</p>`;
+      otherContainer.innerHTML = `<p class="empty-msg">You have no other orders yet.</p>`;
+      return;
+    }
+
+    const now = new Date();
+    const filter = filterSelect.value;
+    const filteredOrders = allOrders.filter(([id,o]) => {
+      if(!o.date) return false;
+      const orderDate = new Date(o.date);
+      const diffTime = now - orderDate;
+      const diffDays = diffTime/(1000*60*60*24);
+      switch(filter){
+        case "today": return orderDate.toDateString() === now.toDateString();
+        case "yesterday": 
+          const yesterday = new Date(now); yesterday.setDate(now.getDate()-1);
+          return orderDate.toDateString() === yesterday.toDateString();
+        case "last3": return diffDays <= 3;
+        case "last7": return diffDays <= 7;
+        case "lastMonth": return diffDays <= 30;
+        default: return true;
+      }
+    });
+
+    if(filteredOrders.length === 0){
+      customContainer.innerHTML = `<p class="empty-msg">No custom cake orders in this period.</p>`;
+      otherContainer.innerHTML = `<p class="empty-msg">No other orders in this period.</p>`;
+      return;
+    }
+
+    const orderRank = { "Pending":1, "Accepted":2, "Declined":3, "Completed":4 };
+    filteredOrders.sort((a,b) => orderRank[a[1].status] - orderRank[b[1].status]);
+
+    filteredOrders.forEach(([id,o]) => {
+      const card = document.createElement("div");
+      card.className = "order-card";
+      const statusClass = o.status==="Pending"?"status-pending":
+                          o.status==="Accepted"?"status-accepted":
+                          o.status==="Declined"?"status-declined":"status-completed";
+
+      if(o.category?.toLowerCase() === "custom cake"){
+        card.innerHTML = `
+          <h4>${o.productName}</h4>
+          <p><strong>Status:</strong> <span class="order-status ${statusClass}">${o.status}</span></p>
+          <div style="margin:10px 0; padding:10px; background:#fff0f8; border-radius:10px; border:1px solid #e033a9;">
+            <p><strong>Shape:</strong> ${o.cakeShape || ""}</p>
+            <p><strong>Flavor:</strong> ${o.baseFlavor || ""}</p>
+            <p><strong>Topping:</strong> ${o.toppings || ""}</p>
+            <p><strong>Frosting:</strong> ${o.frosting || ""}</p>
+            <p><strong>Candles:</strong> ${o.addCandle ? (o.candleType==="number"?o.numberCandle:o.candleType):"None"}</p>
+            <p><strong>Message:</strong> ${o.cakeMessage || ""}</p>
+            <p><strong>Size:</strong> ${o.size || ""}</p>
+            <p><strong>Layers:</strong> ${o.layers || ""}</p>
+          </div>
+          <p><strong>Quantity:</strong> ${o.quantity}</p>
+          <p><strong>Total Amount:</strong> ₱${Number(o.total).toFixed(2)}</p>
+          <p><strong>Payment Method:</strong> ${o.paymentMode}</p>
+          <p><strong>Pickup/Delivery Date:</strong> ${o.pickupDate || ""}</p>
+          <p><strong>Date Ordered:</strong> ${o.date?.split("T")[0]}</p>
+          ${o.status==="Pending"?`<button onclick="showCancelModal('${id}')">Cancel Order</button>`:""}
+          ${o.status==="Completed"?`<button onclick="viewReceipt('${id}')">View Receipt</button>`:""}
+        `;
+        customContainer.appendChild(card);
+      } else {
+        let extraInfo = "";
+        const cat = o.category?.toLowerCase() || "";
+        if(cat === "cupcake" || cat === "cookies"){
+          extraInfo = `<p><strong>Box:</strong> ${o.box || "Standard"}</p>`;
+        } else if(cat === "drink"){
+          extraInfo = `<p><strong>Size:</strong> ${o.size || "Regular"}</p>`;
+        }
+
+        card.innerHTML = `
+          <img src="${o.productImage || 'no-image.jpg'}">
+          <h4>${o.productName}</h4>
+          <p><strong>Status:</strong> <span class="order-status ${statusClass}">${o.status}</span></p>
+          ${extraInfo}
+          <p><strong>Quantity:</strong> ${o.quantity}</p>
+          <p><strong>Total:</strong> ₱${Number(o.total).toFixed(2)}</p>
+          <p><strong>Payment:</strong> ${o.paymentMode}</p>
+          <p><strong>Pickup Date:</strong> ${o.pickupDate || ""}</p>
+          <p><strong>Date Ordered:</strong> ${o.date?.split("T")[0]}</p>
+          ${o.status==="Pending"?`<button onclick="showCancelModal('${id}')">Cancel Order</button>`:""}
+          ${o.status==="Completed"?`<button onclick="viewReceipt('${id}')">View Receipt</button>`:""}
+        `;
+        otherContainer.appendChild(card);
+      }
+    });
+
+    if(!customContainer.hasChildNodes()) customContainer.innerHTML = `<p class="empty-msg">You have no custom cake orders yet.</p>`;
+    if(!otherContainer.hasChildNodes()) otherContainer.innerHTML = `<p class="empty-msg">You have no other orders yet.</p>`;
+  }
+}
+
+window.viewReceipt = function(orderId){ window.location.href=`receipt.html?order=${orderId}`; }
+
+const cancelModal = document.getElementById("cancelModal");
+const modalClose = document.getElementById("modalClose");
+const modalConfirm = document.getElementById("modalConfirm");
+
+window.showCancelModal = function(orderId){ cancelOrderId = orderId; cancelModal.style.display = "flex"; };
+modalClose.onclick = ()=>{ cancelModal.style.display = "none"; };
+modalConfirm.onclick = async ()=>{
+  if(!cancelOrderId) return;
+  const orderRef = ref(db,`orders/${cancelOrderId}`);
+  await set(orderRef,null);
+  cancelModal.style.display="none";
+  showCustomerNotification("Your order was cancelled.");
+};
+
+function showCustomerNotification(message){
+  const notif = document.getElementById("customerNotif");
+  const msg = document.getElementById("customerNotifMsg");
+  msg.textContent = message;
+  notif.classList.add("show");
+  setTimeout(()=>{notif.classList.remove("show");},5000);
+}
+
+let lastStatuses={};
+const ordersRef=ref(db,"orders");
+onValue(ordersRef,(snap)=>{
+  const data = snap.val()||{};
+  for(const [id,o] of Object.entries(data)){
+    if(o.email === currentUserEmail){
+      if(lastStatuses[id] && lastStatuses[id] !== o.status){
+        showCustomerNotification(`Status of "${o.productName}" changed to ${o.status}`);
+      }
+      lastStatuses[id] = o.status;
+    }
+  }
+});
+</script>
+</body>
+</html>
